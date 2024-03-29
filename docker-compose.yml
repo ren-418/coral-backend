@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+        - POSTGRES_USER=admin
+        - POSTGRES_PASSWORD=admin
+        - POSTGRES_DB=coral
+        - DATABASE_HOST=127.0.0.1
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "tomi.serra@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+        - "80:80"
+    depends_on:
+        - postgres
