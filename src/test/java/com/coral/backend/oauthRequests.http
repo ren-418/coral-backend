@@ -1,0 +1,158 @@
+
+###
+# This endpoint is used to register a new user.
+# It accepts a POST request with a JSON body.
+# The JSON body should include:
+# - email: The user's email address.
+# - password: The user's password.
+# - firstName: The user's first name.
+# - lastName: The user's last name.
+# - birthDate: The user's birth date in the format "yyyy-mm-dd".
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "username": "testuser",
+  "firstName": "John",
+  "lastName": "Doe",
+  "birthDate": "1990-01-01"
+}
+
+###
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+"email": "test@example.com",
+"password": "password123",
+"username": "testuser2",
+"firstName": "John",
+"lastName": "Doe",
+"birthDate": "1990-01-01"
+}
+
+
+
+
+###
+###
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+"email": "test@example2.com",
+"password": "password123",
+"username": "testuser",
+"firstName": "John",
+"lastName": "Doe",
+"birthDate": "1990-01-01"
+}
+
+
+
+
+###
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+"email": "test@example.com",
+"password": "password123",
+"username": "testuser",
+"firstName": "John",
+"lastName": "Doe",
+"birthDate": "1990-01-01"
+}
+
+
+
+
+###
+
+
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+<> 2024-03-21T175607.200.txt
+<> 2024-03-21T174958.200.txt
+
+
+###
+# This endpoint is used to log in an existing user.
+# This method will return password not found.
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password1234"
+}
+
+
+
+###
+# This endpoint is used to log in an existing user.
+# This method will return user not found.
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "test@example1.com",
+  "password": "password123"
+}
+
+
+
+###
+# Validate Session ID
+
+POST http://localhost:8080/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "sessionId": "baeafc3a-625f-44c6-837d-80c6e831f826"
+
+}
+
+
+###
+# Create a Group
+
+POST http://localhost:8080/api/v1/groups/create
+Content-Type: application/json
+
+{
+  "title": "Test Group",
+  "description": "This is a test group.",
+  "isPrivate": true,
+  "userId": "01bb4ef7-3d7a-4c67-badf-5caacf55f25a"
+}
+
+###
+POST http://localhost:8080/api/v1/groups/create
+Content-Type: application/json
+
+{
+  "title": "Test Group2",
+  "description": "This is a test group.",
+  "isPrivate": true,
+  "userId": "847363550040521594"
+}
+
+###
+GET http://localhost:8080/api/v1/groups/getGroups?user_id=847363550040521594
+
+
+
+
+###
+GET http://localhost:8080/api/v1/users/b5377fe1-f637-472c-a04c-63ec2a230532/friend-requests
+

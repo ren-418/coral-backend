@@ -1,0 +1,87 @@
+/*package com.coral.backend.services;
+
+import com.coral.backend.dtos.LoginDTO;
+import com.coral.backend.dtos.RegisterDTO;
+import com.coral.backend.entities.Session;
+import com.coral.backend.entities.Users;
+import com.coral.backend.repositories.SessionRepository;
+import com.coral.backend.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+*/
+/*
+@Service
+public class AuthService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
+    private SessionService sessionService;
+
+    public ResponseEntity<Object> register(RegisterDTO user) {
+       Optional<Users> emailEntry = userRepository.findUserByEmail(user.getEmail());
+       Optional<Users> usernameEntry = userRepository.findUserByUsername(user.getUsername());
+
+        if (emailEntry.isPresent() || usernameEntry.isPresent()) {
+           if (emailEntry.isPresent() && usernameEntry.isPresent()) {
+               return new ResponseEntity<>("auth/email-username-already-in-use", HttpStatus.CONFLICT);
+           } else if (emailEntry.isPresent()) {
+               return new ResponseEntity<>("auth/email-already-in-use", HttpStatus.CONFLICT);
+           } else {
+               return new ResponseEntity<>("auth/username-already-in-use", HttpStatus.CONFLICT);
+           }
+        }
+
+        Users newUser = new Users();
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setEmail(user.getEmail());
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(user.getPassword());
+        userRepository.save(newUser);
+        String response =  "User " + newUser.getFirstName() + " " + newUser.getLastName() + " registered successfully!";
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<Object> login(LoginDTO userDTO) {
+        Optional<Users> optionalUser = convertToEntity(userDTO);
+
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>("auth/user-not-found", HttpStatus.NOT_FOUND);
+        }
+
+        Users user = optionalUser.get();
+        if (user.getPassword().equals(userDTO.getPassword())) {
+            Optional<Session> optionalSession = sessionRepository.findSessionByUserId(user.getId());
+            if (optionalSession.isPresent()) {
+                Session session = optionalSession.get();
+               if (sessionService.isSessionExpired(session.getId())) {
+                   sessionService.addTime(session);
+                   return new ResponseEntity<>(session.getId(), HttpStatus.OK);
+               } else {
+                   sessionRepository.delete(session);
+               }
+            }
+            Session newSession = new Session();
+            newSession.setUser(user);
+            sessionRepository.save(newSession);
+            return new ResponseEntity<>(newSession.getId(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("auth/wrong-password", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    public Optional<Users> convertToEntity(LoginDTO userDTO) {
+        return userRepository.findUserByEmail(userDTO.getEmail());
+    }
+}
+*/

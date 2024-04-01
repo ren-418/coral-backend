@@ -1,11 +1,13 @@
-package com.coral.backend.model;
+package com.coral.backend.entities;
 
 import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
 
+
 @Entity
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //TABLE_PER_CLASS o JOINED
 @DiscriminatorColumn(name = "user_type")
 public class User {
@@ -18,7 +20,6 @@ public class User {
     private String password;
     private String description;
     private String location;
-    private int type;
     private Date initial_date;
 
     @ManyToMany
