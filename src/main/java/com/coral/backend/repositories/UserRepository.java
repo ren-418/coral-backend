@@ -1,12 +1,10 @@
-/*package com.coral.backend.repositories;
+package com.coral.backend.repositories;
 
-import com.coral.backend.entities.Users;
+import com.coral.backend.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<Users, String> {
-    Optional<Users> findUserByEmail(String email);
-    Optional<Users> findUserByUsername(String username);
-    Optional<Users> findUserByFirstNameAndLastName(String firstName, String lastName);
-}*/
+public interface UserRepository extends JpaRepository<User, String> {
+    Optional<User> findUserByEmail(String email);
+}
