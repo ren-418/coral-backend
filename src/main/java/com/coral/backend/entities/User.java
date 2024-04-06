@@ -8,11 +8,11 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //TABLE_PER_CLASS o JOINED
-@DiscriminatorColumn(name = "user_type")
+@DiscriminatorColumn(name = "userType")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long user_id;
+    private long userId;
 
     private String name;
 
@@ -32,7 +32,7 @@ public class User {
 
     //Setters
     public void setUserId(long user_id) {
-        this.user_id = user_id;
+        this.userId = user_id;
     }
 
     public void setName(String name) {
@@ -65,7 +65,7 @@ public class User {
 
     //Getters
     public long getUserId() {
-        return user_id;
+        return userId;
     }
 
     public String getName() {

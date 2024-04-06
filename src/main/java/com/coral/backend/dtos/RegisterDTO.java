@@ -10,7 +10,7 @@ public class RegisterDTO {
     //Getters
 
     public String getEmail() {
-        return email;
+        return email.toLowerCase();
     }
 
     public String getPassword() {
@@ -24,7 +24,7 @@ public class RegisterDTO {
     //Setters
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public void setPassword(String password) {
@@ -32,6 +32,6 @@ public class RegisterDTO {
     }
 
     public void setAccountType(String accountType) {
-        this.accountType = accountType;
+        this.accountType = accountType.toLowerCase();
     }
 }

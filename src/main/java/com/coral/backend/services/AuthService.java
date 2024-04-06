@@ -1,5 +1,7 @@
 package com.coral.backend.services;
 
+import com.coral.backend.dtos.CheckSessionDTO;
+import com.coral.backend.dtos.LoginDTO;
 import com.coral.backend.dtos.RegisterDTO;
 import com.coral.backend.entities.EnterpriseUser;
 import com.coral.backend.entities.InvestorUser;
@@ -25,7 +27,7 @@ public class AuthService {
         String response;
 
         if (emailEntry.isPresent()) {
-            return new ResponseEntity<>("auth/email-already-in-use", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Email already in use", HttpStatus.CONFLICT);
         }
         switch (user.getAccountType()) {
             case "investor":
@@ -33,51 +35,62 @@ public class AuthService {
                 investorUser.setEmail(user.getEmail());
                 investorUser.setPassword(user.getPassword());
                 userRepository.save(investorUser);
-                response =  "User " + investorUser.getEmail() + " registered successfully!";
+                response =  "Your account was created successfully";
                 break;
             case "enterprise":
                 EnterpriseUser enterpriseUser = new EnterpriseUser();
                 enterpriseUser.setEmail(user.getEmail());
                 enterpriseUser.setPassword(user.getPassword());
                 userRepository.save(enterpriseUser);
-                response =  "User " + enterpriseUser.getEmail() + " registered successfully!";
+                response =  "Your account was created successfully";
                 break;
             default:
-                return new ResponseEntity<>("auth/invalid-account-type", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("That user type does not exist", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
-    /*public ResponseEntity<Object> login(LoginDTO userDTO) {
-        Optional<Users> optionalUser = convertToEntity(userDTO);
+    public ResponseEntity<Object> login(LoginDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findUserByEmail(userDTO.getEmail());
 
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>("auth/user-not-found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("That email is not registered", HttpStatus.NOT_FOUND);
         }
 
-        Users user = optionalUser.get();
+        User user = optionalUser.get();
         if (user.getPassword().equals(userDTO.getPassword())) {
-            Optional<Session> optionalSession = sessionRepository.findSessionByUserId(user.getId());
-            if (optionalSession.isPresent()) {
-                Session session = optionalSession.get();
-               if (sessionService.isSessionExpired(session.getId())) {
-                   sessionService.addTime(session);
-                   return new ResponseEntity<>(session.getId(), HttpStatus.OK);
-               } else {
-                   sessionRepository.delete(session);
-               }
+            if (user instanceof InvestorUser) {
+                InvestorUser investor = (InvestorUser) user;
+                return new ResponseEntity<>(investor, HttpStatus.OK);
+            } else if (user instanceof EnterpriseUser) {
+                EnterpriseUser enterprise = (EnterpriseUser) user;
+                return new ResponseEntity<>(enterprise, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
-            Session newSession = new Session();
-            newSession.setUser(user);
-            sessionRepository.save(newSession);
-            return new ResponseEntity<>(newSession.getId(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("auth/wrong-password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
         }
     }
 
-    public Optional<Users> convertToEntity(LoginDTO userDTO) {
-        return userRepository.findUserByEmail(userDTO.getEmail());
-    }*/
+    public ResponseEntity<Object> checkUser(CheckSessionDTO requestBody) {
+        Optional<User> optionalUser = userRepository.findUserByUserId(requestBody.getUserId());
+
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        User user = optionalUser.get();
+
+        if (user instanceof InvestorUser) {
+            InvestorUser investor = (InvestorUser) user;
+            return new ResponseEntity<>(investor, HttpStatus.OK);
+        } else if (user instanceof EnterpriseUser) {
+            EnterpriseUser enterprise = (EnterpriseUser) user;
+            return new ResponseEntity<>(enterprise, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
 }
