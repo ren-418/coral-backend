@@ -1,9 +1,12 @@
 package com.coral.backend.entities;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
 public class InvestorUser extends User {
+
+    @Column(insertable=false, updatable=false)
+    private String userType = "investor";
 
     private int investor_type;
     private String investment_criteria;
@@ -42,5 +45,9 @@ public class InvestorUser extends User {
 
     public int getRangeMax() {
         return range_max;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 }

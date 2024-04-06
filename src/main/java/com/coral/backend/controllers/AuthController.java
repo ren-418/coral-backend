@@ -1,5 +1,7 @@
 package com.coral.backend.controllers;
 
+import com.coral.backend.dtos.CheckSessionDTO;
+import com.coral.backend.dtos.LoginDTO;
 import com.coral.backend.dtos.RegisterDTO;
 import com.coral.backend.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +21,13 @@ public class AuthController {
         return authService.register(user);
     }
 
-    /*@PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginDTO userDTO) {
         return authService.login(userDTO);
-    }*/
+    }
 
-    /*@PostMapping("/refresh")
-    public ResponseEntity<Object> refresh(@RequestBody Map<String, String> requestBody) {
-        String sessionId = requestBody.get("sessionId");
-        if (!sessionId.isEmpty()) {
-            return sessionService.refresh(sessionId);
-        }
-        return null;
-    }*/
+    @PostMapping("/check-user")
+    public ResponseEntity<Object> checkUser(@RequestBody CheckSessionDTO requestBody) {
+        return authService.checkUser(requestBody);
+    }
 }
