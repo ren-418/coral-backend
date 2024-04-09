@@ -17,8 +17,8 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody RegisterDTO user) {
-        return authService.register(user);
+    public ResponseEntity<Object> register(@RequestBody RegisterDTO registerDTO) {
+        return authService.register(registerDTO);
     }
 
     @PostMapping("/login")
@@ -27,7 +27,8 @@ public class AuthController {
     }
 
     @PostMapping("/check-user")
-    public ResponseEntity<Object> checkUser(@RequestBody CheckSessionDTO requestBody) {
-        return authService.checkUser(requestBody);
+    public ResponseEntity<Object> checkUser(@RequestBody CheckSessionDTO checkSessionDTO) {
+        System.out.println(checkSessionDTO.getSessionToken());
+        return authService.checkUser(checkSessionDTO);
     }
 }

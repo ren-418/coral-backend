@@ -1,13 +1,13 @@
 package com.coral.backend.dtos;
 
 public class CheckSessionDTO {
-    private int userId;
+    private String sessionToken;
 
-    public int getUserId() {
-        return userId;
+    public String getSessionToken() {
+        return sessionToken;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
     }
 }

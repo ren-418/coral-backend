@@ -1,36 +1,20 @@
-package com.coral.backend.entities;
+package com.coral.backend.dtos;
 
+import com.coral.backend.entities.Area;
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
-
-@Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) //TABLE_PER_CLASS o JOINED
-@DiscriminatorColumn(name = "userType")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class EnterpriseDTO {
+    private String userType;
     private long userId;
-
-    @Column(nullable = false)
     private boolean firstLogin;
-
     private String name;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
     private String description;
     private String location;
     private Date initial_date;
-
-    public User(){}
-
-    @ManyToMany
     private List<Area> areas;
 
     //Setters
@@ -49,9 +33,6 @@ public class User {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public void setDescription(String description) {
         this.description = description;
@@ -69,6 +50,10 @@ public class User {
         this.areas = area;
     }
 
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
     //Getters
     public long getUserId() {
         return userId;
@@ -80,10 +65,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getDescription() {
@@ -105,4 +86,8 @@ public class User {
     public boolean getFirstLogin() {
         return firstLogin;
     }
+    public String getUserType() {
+        return userType;
+    }
+
 }

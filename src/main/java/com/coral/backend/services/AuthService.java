@@ -1,11 +1,11 @@
 package com.coral.backend.services;
 
-import com.coral.backend.dtos.CheckSessionDTO;
-import com.coral.backend.dtos.LoginDTO;
-import com.coral.backend.dtos.RegisterDTO;
+import com.coral.backend.dtos.*;
 import com.coral.backend.entities.EnterpriseUser;
 import com.coral.backend.entities.InvestorUser;
+import com.coral.backend.entities.Session;
 import com.coral.backend.entities.User;
+import com.coral.backend.repositories.SessionRepository;
 import com.coral.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +19,9 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
 
 
     public ResponseEntity<Object> register(RegisterDTO user) {
@@ -34,6 +37,7 @@ public class AuthService {
                 InvestorUser investorUser = new InvestorUser();
                 investorUser.setEmail(user.getEmail());
                 investorUser.setPassword(user.getPassword());
+                investorUser.setFirstLogin(true);
                 userRepository.save(investorUser);
                 response =  "Your account was created successfully";
                 break;
@@ -41,6 +45,7 @@ public class AuthService {
                 EnterpriseUser enterpriseUser = new EnterpriseUser();
                 enterpriseUser.setEmail(user.getEmail());
                 enterpriseUser.setPassword(user.getPassword());
+                enterpriseUser.setFirstLogin(true);
                 userRepository.save(enterpriseUser);
                 response =  "Your account was created successfully";
                 break;
@@ -58,14 +63,25 @@ public class AuthService {
             return new ResponseEntity<>("That email is not registered", HttpStatus.NOT_FOUND);
         }
 
+        Optional<Session> optionalSession = sessionRepository.findSessionByUser(optionalUser.get());
+
         User user = optionalUser.get();
         if (user.getPassword().equals(userDTO.getPassword())) {
+            Session session = new Session();
+            if (optionalSession.isEmpty()) {
+                session.setUser(user);
+                sessionRepository.save(session);
+            }
+            else{
+                session = optionalSession.get();
+            }
+
             if (user instanceof InvestorUser) {
                 InvestorUser investor = (InvestorUser) user;
-                return new ResponseEntity<>(investor, HttpStatus.OK);
+                return new ResponseEntity<>(session.getSessionToken(), HttpStatus.OK);
             } else if (user instanceof EnterpriseUser) {
                 EnterpriseUser enterprise = (EnterpriseUser) user;
-                return new ResponseEntity<>(enterprise, HttpStatus.OK);
+                return new ResponseEntity<>(session.getSessionToken(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
@@ -75,22 +91,42 @@ public class AuthService {
     }
 
     public ResponseEntity<Object> checkUser(CheckSessionDTO requestBody) {
-        Optional<User> optionalUser = userRepository.findUserByUserId(requestBody.getUserId());
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
 
-        if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
         }
 
-        User user = optionalUser.get();
+        User user = optionalSession.get().getUser();
 
         if (user instanceof InvestorUser) {
             InvestorUser investor = (InvestorUser) user;
-            return new ResponseEntity<>(investor, HttpStatus.OK);
+            InvestorDTO investorDTO = new InvestorDTO();
+            investorDTO.setEmail(investor.getEmail());
+            investorDTO.setFirstLogin(investor.getFirstLogin());
+            investorDTO.setUserId(investor.getUserId());
+            investorDTO.setName(investor.getName());
+            investorDTO.setDescription(investor.getDescription());
+            investorDTO.setLocation(investor.getLocation());
+            investorDTO.setInitialDate(investor.getInitialDate());
+            investorDTO.setAreas(investor.getAreas());
+            investorDTO.setUserType(investor.getUserType());
+            return new ResponseEntity<>(investorDTO, HttpStatus.OK);
         } else if (user instanceof EnterpriseUser) {
             EnterpriseUser enterprise = (EnterpriseUser) user;
-            return new ResponseEntity<>(enterprise, HttpStatus.OK);
+            EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+            enterpriseDTO.setEmail(enterprise.getEmail());
+            enterpriseDTO.setFirstLogin(enterprise.getFirstLogin());
+            enterpriseDTO.setUserId(enterprise.getUserId());
+            enterpriseDTO.setName(enterprise.getName());
+            enterpriseDTO.setDescription(enterprise.getDescription());
+            enterpriseDTO.setLocation(enterprise.getLocation());
+            enterpriseDTO.setInitialDate(enterprise.getInitialDate());
+            enterpriseDTO.setAreas(enterprise.getAreas());
+            enterpriseDTO.setUserType(enterprise.getUserType());
+            return new ResponseEntity<>(enterpriseDTO, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Invalid user type", HttpStatus.NOT_FOUND);
         }
     }
 }

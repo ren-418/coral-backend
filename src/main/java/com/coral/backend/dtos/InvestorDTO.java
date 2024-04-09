@@ -1,39 +1,64 @@
-package com.coral.backend.entities;
+package com.coral.backend.dtos;
 
+import com.coral.backend.entities.Area;
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
-
-@Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) //TABLE_PER_CLASS o JOINED
-@DiscriminatorColumn(name = "userType")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class InvestorDTO {
+    private int investor_type;
+    private String investment_criteria;
+    private int range_min;
+    private int range_max;
     private long userId;
-
-    @Column(nullable = false)
     private boolean firstLogin;
-
     private String name;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
     private String description;
     private String location;
     private Date initial_date;
-
-    public User(){}
-
-    @ManyToMany
     private List<Area> areas;
+    private String userType;
 
     //Setters
+    public void setInvestorType(int investor_type) {
+        this.investor_type = investor_type;
+    }
+
+    public void setInvestmentCriteria(String investment_criteria) {
+        this.investment_criteria = investment_criteria;
+    }
+
+    public void setRangeMin(int range_min) {
+        this.range_min = range_min;
+    }
+
+    public void setRangeMax(int range_max) {
+        this.range_max = range_max;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    //Getters
+    public int getInvestorType() {
+        return investor_type;
+    }
+
+    public String getInvestmentCriteria() {
+        return investment_criteria;
+    }
+
+    public int getRangeMin() {
+        return range_min;
+    }
+
+    public int getRangeMax() {
+        return range_max;
+    }
+
     public void setUserId(long user_id) {
         this.userId = user_id;
     }
@@ -47,10 +72,6 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setDescription(String description) {
@@ -82,10 +103,6 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -104,5 +121,9 @@ public class User {
 
     public boolean getFirstLogin() {
         return firstLogin;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 }
