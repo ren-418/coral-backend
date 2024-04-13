@@ -8,43 +8,43 @@ public class InvestorUser extends User {
     @Column(insertable=false, updatable=false)
     private String userType = "investor";
 
-    private int investor_type;
-    private String investment_criteria;
-    private int range_min;
-    private int range_max;
+    private int investorType;
+    private String investmentCriteria;
+    private int rangeMin;
+    private int rangeMax;
 
     //Setters
     public void setInvestorType(int investor_type) {
-        this.investor_type = investor_type;
+        this.investorType = investor_type;
     }
 
     public void setInvestmentCriteria(String investment_criteria) {
-        this.investment_criteria = investment_criteria;
+        this.investmentCriteria = investment_criteria;
     }
 
     public void setRangeMin(int range_min) {
-        this.range_min = range_min;
+        this.rangeMin = range_min;
     }
 
     public void setRangeMax(int range_max) {
-        this.range_max = range_max;
+        this.rangeMax = range_max;
     }
 
     //Getters
     public int getInvestorType() {
-        return investor_type;
+        return investorType;
     }
 
     public String getInvestmentCriteria() {
-        return investment_criteria;
+        return investmentCriteria;
     }
 
     public int getRangeMin() {
-        return range_min;
+        return rangeMin;
     }
 
     public int getRangeMax() {
-        return range_max;
+        return rangeMax;
     }
 
     public String getUserType() {
