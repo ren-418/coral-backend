@@ -2,6 +2,7 @@ package com.coral.backend.controllers;
 
 import com.coral.backend.dtos.CheckSessionDTO;
 import com.coral.backend.dtos.LoginDTO;
+import com.coral.backend.dtos.LogoutDTO;
 import com.coral.backend.dtos.RegisterDTO;
 import com.coral.backend.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginDTO userDTO) {
         return authService.login(userDTO);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(@RequestBody LogoutDTO logoutDTO) {
+        return authService.logout(logoutDTO);
     }
 
     @PostMapping("/check-user")

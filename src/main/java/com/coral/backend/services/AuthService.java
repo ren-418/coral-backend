@@ -129,4 +129,25 @@ public class AuthService {
             return new ResponseEntity<>("Invalid user type", HttpStatus.NOT_FOUND);
         }
     }
+
+    public ResponseEntity<Object> logout(LogoutDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
+        }
+
+        sessionRepository.delete(optionalSession.get());
+        return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+    }
+
+    public User checkAuth(String sessionToken){
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(sessionToken);
+
+        if (optionalSession.isEmpty()) {
+            return null;
+        }
+
+        return optionalSession.get().getUser();
+    }
 }
