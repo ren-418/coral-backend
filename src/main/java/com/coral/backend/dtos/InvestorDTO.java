@@ -1,11 +1,14 @@
 package com.coral.backend.dtos;
 
 import com.coral.backend.entities.Area;
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 
 import java.util.Date;
 import java.util.List;
 
 public class InvestorDTO {
+    private byte[] profileImage;
     private int investorType;
     private String investmentCriteria;
     private int rangeMin;
@@ -22,6 +25,9 @@ public class InvestorDTO {
     private String sessionToken;
 
     //Setters
+    public void setProfileImage(byte[] base64) {
+        this.profileImage = base64;
+    }
     public void setInvestorType(int investor_type) {
         this.investorType = investor_type;
     }
@@ -95,6 +101,9 @@ public class InvestorDTO {
     }
 
     //Getters
+    public byte[] getProfileImage(){
+        return profileImage;
+    }
     public long getUserId() {
         return userId;
     }

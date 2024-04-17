@@ -1,19 +1,12 @@
 package com.coral.backend.services;
 
-import com.coral.backend.dtos.CheckSessionDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.entities.InvestorUser;
-import com.coral.backend.entities.User;
 import com.coral.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 
@@ -31,6 +24,7 @@ public class UserService {
             return new ResponseEntity<>("You don't have auth permision", HttpStatus.UNAUTHORIZED);
         }
 
+        user.setProfileImage(requestBody.getProfileImage());
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
         user.setLocation(requestBody.getLocation());

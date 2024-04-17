@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class EnterpriseDTO {
+    private byte[] profileImage;
     private String userType;
     private long userId;
     private boolean firstLogin;
@@ -18,6 +19,9 @@ public class EnterpriseDTO {
     private List<Area> areas;
 
     //Setters
+    public void setProfileImage(byte[] base64) {
+        this.profileImage = base64;
+    }
     public void setUserId(long user_id) {
         this.userId = user_id;
     }
@@ -88,6 +92,9 @@ public class EnterpriseDTO {
     }
     public String getUserType() {
         return userType;
+    }
+    public byte[] getProfileImage(){
+        return profileImage;
     }
 
 }

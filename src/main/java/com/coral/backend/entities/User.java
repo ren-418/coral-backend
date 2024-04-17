@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //TABLE_PER_CLASS o JOINED
@@ -18,6 +17,8 @@ public class User {
     private boolean firstLogin;
 
     private String name;
+
+    private byte[] profileImage;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -34,6 +35,9 @@ public class User {
     private List<Area> areas;
 
     //Setters
+    public void setProfileImage(byte[] base64) {
+        this.profileImage = base64;
+    }
     public void setUserId(long user_id) {
         this.userId = user_id;
     }
@@ -104,5 +108,9 @@ public class User {
 
     public boolean getFirstLogin() {
         return firstLogin;
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
     }
 }
