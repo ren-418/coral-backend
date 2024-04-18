@@ -3,7 +3,9 @@ package com.coral.backend.services;
 import com.coral.backend.dtos.CheckSessionDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.entities.InvestorUser;
+import com.coral.backend.entities.ResetToken;
 import com.coral.backend.entities.User;
+import com.coral.backend.repositories.ResetTokenRepository;
 import com.coral.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,9 @@ public class UserService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private ResetTokenRepository passwordTokenRepository;
+
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
         InvestorUser user = (InvestorUser) authService.checkAuth(requestBody.getSessionToken());
         if(user == null){
@@ -42,5 +47,4 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>("Profile created successfully", HttpStatus.OK);
     }
-
 }
