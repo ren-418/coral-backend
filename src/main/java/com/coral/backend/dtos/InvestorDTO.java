@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class InvestorDTO {
+    private String profilePicture;
     private int investorType;
     private String investmentCriteria;
     private int rangeMin;
@@ -16,12 +17,14 @@ public class InvestorDTO {
     private String email;
     private String description;
     private String location;
-    private Date initialDate;
     private List<Area> areas;
     private String userType;
     private String sessionToken;
 
     //Setters
+    public void setProfilePicture(String base64) {
+        this.profilePicture = base64;
+    }
     public void setInvestorType(int investor_type) {
         this.investorType = investor_type;
     }
@@ -82,10 +85,6 @@ public class InvestorDTO {
         this.location = location;
     }
 
-    public void setInitialDate(Date initial_date) {
-        this.initialDate = initial_date;
-    }
-
     public void setAreas(List<Area> area) {
         this.areas = area;
     }
@@ -95,6 +94,9 @@ public class InvestorDTO {
     }
 
     //Getters
+    public String getProfilePicture(){
+        return profilePicture;
+    }
     public long getUserId() {
         return userId;
     }
@@ -113,10 +115,6 @@ public class InvestorDTO {
 
     public String getLocation() {
         return location;
-    }
-
-    public Date getInitialDate() {
-        return initialDate;
     }
 
     public List<Area> getAreas() {

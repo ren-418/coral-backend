@@ -1,9 +1,10 @@
 package com.coral.backend.entities;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-
 
 @Entity
 @Table(name = "users")
@@ -19,6 +20,8 @@ public class User {
 
     private String name;
 
+    private byte[] profileImage;
+
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -26,7 +29,7 @@ public class User {
     private String password;
     private String description;
     private String location;
-    private Date initial_date;
+    private LocalDate initial_date;
 
     public User(){}
 
@@ -34,6 +37,9 @@ public class User {
     private List<Area> areas;
 
     //Setters
+    public void setProfileImage(byte[] base64) {
+        this.profileImage = base64;
+    }
     public void setUserId(long user_id) {
         this.userId = user_id;
     }
@@ -61,7 +67,7 @@ public class User {
         this.location = location;
     }
 
-    public void setInitialDate(Date initial_date) {
+    public void setInitialDate(LocalDate initial_date) {
         this.initial_date = initial_date;
     }
 
@@ -94,7 +100,7 @@ public class User {
         return location;
     }
 
-    public Date getInitialDate() {
+    public LocalDate getInitialDate() {
         return initial_date;
     }
 
@@ -104,5 +110,9 @@ public class User {
 
     public boolean getFirstLogin() {
         return firstLogin;
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
     }
 }
