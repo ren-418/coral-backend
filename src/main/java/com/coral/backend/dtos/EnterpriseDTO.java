@@ -15,7 +15,6 @@ public class EnterpriseDTO {
     private String email;
     private String description;
     private String location;
-    private Date initial_date;
     private List<Area> areas;
 
     //Setters
@@ -46,10 +45,6 @@ public class EnterpriseDTO {
         this.location = location;
     }
 
-    public void setInitialDate(Date initial_date) {
-        this.initial_date = initial_date;
-    }
-
     public void setAreas(List<Area> area) {
         this.areas = area;
     }
@@ -77,10 +72,6 @@ public class EnterpriseDTO {
 
     public String getLocation() {
         return location;
-    }
-
-    public Date getInitialDate() {
-        return initial_date;
     }
 
     public List<Area> getAreas() {

@@ -1,6 +1,8 @@
 package com.coral.backend.entities;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class User {
     private String password;
     private String description;
     private String location;
-    private Date initial_date;
+    private LocalDate initial_date;
 
     public User(){}
 
@@ -65,7 +67,7 @@ public class User {
         this.location = location;
     }
 
-    public void setInitialDate(Date initial_date) {
+    public void setInitialDate(LocalDate initial_date) {
         this.initial_date = initial_date;
     }
 
@@ -98,7 +100,7 @@ public class User {
         return location;
     }
 
-    public Date getInitialDate() {
+    public LocalDate getInitialDate() {
         return initial_date;
     }
 

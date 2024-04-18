@@ -108,7 +108,6 @@ public class AuthService {
             investorDTO.setName(investor.getName());
             investorDTO.setDescription(investor.getDescription());
             investorDTO.setLocation(investor.getLocation());
-            investorDTO.setInitialDate(investor.getInitialDate());
             investorDTO.setAreas(investor.getAreas());
             investorDTO.setUserType(investor.getUserType());
             return new ResponseEntity<>(investorDTO, HttpStatus.OK);
@@ -121,7 +120,6 @@ public class AuthService {
             enterpriseDTO.setName(enterprise.getName());
             enterpriseDTO.setDescription(enterprise.getDescription());
             enterpriseDTO.setLocation(enterprise.getLocation());
-            enterpriseDTO.setInitialDate(enterprise.getInitialDate());
             enterpriseDTO.setAreas(enterprise.getAreas());
             enterpriseDTO.setUserType(enterprise.getUserType());
             return new ResponseEntity<>(enterpriseDTO, HttpStatus.OK);
