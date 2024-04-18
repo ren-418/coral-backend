@@ -2,6 +2,9 @@ package com.coral.backend.services;
 
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.entities.InvestorUser;
+import com.coral.backend.entities.ResetToken;
+import com.coral.backend.entities.User;
+import com.coral.backend.repositories.ResetTokenRepository;
 import com.coral.backend.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,10 @@ public class UserService {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private ResetTokenRepository passwordTokenRepository;
+  
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
         InvestorUser user = (InvestorUser) authService.checkAuth(requestBody.getSessionToken());
