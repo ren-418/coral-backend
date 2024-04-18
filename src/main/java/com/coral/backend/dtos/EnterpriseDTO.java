@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class EnterpriseDTO {
+    private byte[] profileImage;
     private String userType;
     private long userId;
     private boolean firstLogin;
@@ -14,10 +15,12 @@ public class EnterpriseDTO {
     private String email;
     private String description;
     private String location;
-    private Date initial_date;
     private List<Area> areas;
 
     //Setters
+    public void setProfileImage(byte[] base64) {
+        this.profileImage = base64;
+    }
     public void setUserId(long user_id) {
         this.userId = user_id;
     }
@@ -40,10 +43,6 @@ public class EnterpriseDTO {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public void setInitialDate(Date initial_date) {
-        this.initial_date = initial_date;
     }
 
     public void setAreas(List<Area> area) {
@@ -75,10 +74,6 @@ public class EnterpriseDTO {
         return location;
     }
 
-    public Date getInitialDate() {
-        return initial_date;
-    }
-
     public List<Area> getAreas() {
         return areas;
     }
@@ -88,6 +83,9 @@ public class EnterpriseDTO {
     }
     public String getUserType() {
         return userType;
+    }
+    public byte[] getProfileImage(){
+        return profileImage;
     }
 
 }
