@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -108,7 +110,11 @@ public class AuthService {
             investorDTO.setName(investor.getName());
             investorDTO.setDescription(investor.getDescription());
             investorDTO.setLocation(investor.getLocation());
-            investorDTO.setAreas(investor.getAreas());
+            List<String> areaNames = new ArrayList<>();
+            for (Area area : investor.getAreas()){
+                areaNames.add(area.getName());
+            }
+            investorDTO.setAreas(areaNames);
             investorDTO.setUserType(investor.getUserType());
             return new ResponseEntity<>(investorDTO, HttpStatus.OK);
         } else if (user instanceof EnterpriseUser) {
@@ -147,14 +153,5 @@ public class AuthService {
         }
 
         return optionalSession.get().getUser();
-    }
-
-    public ResponseEntity<Object> uploadArea(Area area){
-        Optional<Area> emailEntry = areaRepository.findAreaByName(area.getName());
-        if (emailEntry.isPresent()) {
-            return new ResponseEntity<>("Area Already Exists", HttpStatus.CONFLICT);
-        }
-        areaRepository.save(area);
-        return new ResponseEntity<>("Area was uploaded successfully", HttpStatus.OK);
     }
 }

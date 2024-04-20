@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface AreaRepository extends JpaRepository<Area, Long> {
-  Optional<Area> findAreaById(long id);
-  Optional<Area> findAreaByName(String name);
+  Area findAreaById(long id);
+  Area findAreaByName(String name);
 }

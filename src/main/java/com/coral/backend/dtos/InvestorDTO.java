@@ -17,7 +17,7 @@ public class InvestorDTO {
     private String email;
     private String description;
     private String location;
-    private List<Area> areas;
+    private List<String> areas;
     private String userType;
     private String sessionToken;
 
@@ -85,7 +85,7 @@ public class InvestorDTO {
         this.location = location;
     }
 
-    public void setAreas(List<Area> area) {
+    public void setAreas(List<String> area) {
         this.areas = area;
     }
 
@@ -117,7 +117,7 @@ public class InvestorDTO {
         return location;
     }
 
-    public List<Area> getAreas() {
+    public List<String> getAreas() {
         return areas;
     }
 
