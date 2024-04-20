@@ -1,10 +1,8 @@
 package com.coral.backend.services;
 
 import com.coral.backend.dtos.*;
-import com.coral.backend.entities.EnterpriseUser;
-import com.coral.backend.entities.InvestorUser;
-import com.coral.backend.entities.Session;
-import com.coral.backend.entities.User;
+import com.coral.backend.entities.*;
+import com.coral.backend.repositories.AreaRepository;
 import com.coral.backend.repositories.SessionRepository;
 import com.coral.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,8 @@ public class AuthService {
     @Autowired
     private SessionRepository sessionRepository;
 
+    @Autowired
+    private AreaRepository areaRepository;
 
     public ResponseEntity<Object> register(RegisterDTO user) {
        Optional<User> emailEntry = userRepository.findUserByEmail(user.getEmail());
@@ -147,5 +147,14 @@ public class AuthService {
         }
 
         return optionalSession.get().getUser();
+    }
+
+    public ResponseEntity<Object> uploadArea(Area area){
+        Optional<Area> emailEntry = areaRepository.findAreaByName(area.getName());
+        if (emailEntry.isPresent()) {
+            return new ResponseEntity<>("Area Already Exists", HttpStatus.CONFLICT);
+        }
+        areaRepository.save(area);
+        return new ResponseEntity<>("Area was uploaded successfully", HttpStatus.OK);
     }
 }

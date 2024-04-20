@@ -33,7 +33,7 @@ public class User {
 
     public User(){}
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     private List<Area> areas;
 
     //Setters

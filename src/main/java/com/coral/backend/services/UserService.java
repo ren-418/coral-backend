@@ -1,6 +1,7 @@
 package com.coral.backend.services;
 
 import com.coral.backend.dtos.InvestorDTO;
+import com.coral.backend.entities.Area;
 import com.coral.backend.entities.InvestorUser;
 import com.coral.backend.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Base64;
+import java.util.*;
 
 @Service
 
@@ -21,6 +22,9 @@ public class UserService {
 
     @Autowired
     private AuthService authService;
+
+    private Map<String, Area> existingAreas = new HashMap<>();
+
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
         InvestorUser user = (InvestorUser) authService.checkAuth(requestBody.getSessionToken());
@@ -28,6 +32,11 @@ public class UserService {
             return new ResponseEntity<>("You don't have auth permision", HttpStatus.UNAUTHORIZED);
         }
 
+        List<Area> areas = new ArrayList<>();
+        Area testArea = new Area();
+        testArea.setName("testArea");
+        areas.add(testArea);
+        user.setAreas(areas);
         user.setInitialDate(getDate());
         user.setProfileImage(encodeImage(requestBody.getProfilePicture()));
         user.setName(requestBody.getName());
