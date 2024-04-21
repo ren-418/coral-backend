@@ -1,15 +1,13 @@
 package com.coral.backend.dtos;
 
-import com.coral.backend.entities.User;
-
 public class ForgotPasswordDTO {
     private String token;
-    private String userEmail;
+    private String email;
 
     private String password;
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail=userEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setToken(String token) {
@@ -23,7 +21,7 @@ public class ForgotPasswordDTO {
     }
 
     public String getEmail() {
-        return userEmail;
+        return email;
     }
 
     public String getPassword() {return password;}
