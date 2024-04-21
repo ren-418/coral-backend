@@ -2,7 +2,11 @@ package com.coral.backend.services;
 
 import com.coral.backend.dtos.*;
 import com.coral.backend.entities.*;
+
+import com.coral.backend.repositories.AreaRepository;
+
 import com.coral.backend.repositories.ResetTokenRepository;
+
 import com.coral.backend.repositories.SessionRepository;
 import com.coral.backend.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +17,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -28,10 +35,14 @@ public class AuthService {
     private SessionRepository sessionRepository;
 
     @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
     private ResetTokenRepository passwordTokenRepository;
 
     @Autowired
     private JavaMailSenderImpl mailSender;
+
 
     public ResponseEntity<Object> register(RegisterDTO user) {
        Optional<User> emailEntry = userRepository.findUserByEmail(user.getEmail());
@@ -117,7 +128,11 @@ public class AuthService {
             investorDTO.setName(investor.getName());
             investorDTO.setDescription(investor.getDescription());
             investorDTO.setLocation(investor.getLocation());
-            investorDTO.setAreas(investor.getAreas());
+            List<String> areaNames = new ArrayList<>();
+            for (Area area : investor.getAreas()){
+                areaNames.add(area.getName());
+            }
+            investorDTO.setAreas(areaNames);
             investorDTO.setUserType(investor.getUserType());
             return new ResponseEntity<>(investorDTO, HttpStatus.OK);
         } else if (user instanceof EnterpriseUser) {
