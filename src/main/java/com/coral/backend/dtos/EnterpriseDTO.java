@@ -17,6 +17,10 @@ public class EnterpriseDTO {
     private String location;
     private List<String> areas;
     private String sessionToken;
+    String investmentType;
+    int goal;
+    int minimumInvestment;
+    int totalProfitReturn;
 
     //Setters
     public void setSessionToken(String sessionToken){
@@ -58,6 +62,18 @@ public class EnterpriseDTO {
     }
 
     //Getters
+    public int getMinimumInvestment() {
+        return minimumInvestment;
+    }
+    public int getTotalProfitReturn() {
+        return totalProfitReturn;
+    }
+    public int getGoal() {
+        return goal;
+    }
+    public String getInvestmentType() {
+        return investmentType;
+    }
     public String getSessionToken() {
         return sessionToken;
     }

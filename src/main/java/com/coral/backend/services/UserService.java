@@ -79,6 +79,14 @@ public class UserService {
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
         user.setLocation(requestBody.getLocation());
+        if (Objects.equals(requestBody.getInvestmentType(), "Community")){
+            user.setInvestmentType("Community");
+            user.setGoal(requestBody.getGoal());
+            user.setMinimumInvestment(requestBody.getMinimumInvestment());
+            user.setTotalProfitReturn(requestBody.getTotalProfitReturn());
+        } else {
+            user.setInvestmentType("Custom");
+        }
         user.setFirstLogin(false);
         userRepository.save(user);
         return new ResponseEntity<>("Profile created successfully", HttpStatus.OK);
