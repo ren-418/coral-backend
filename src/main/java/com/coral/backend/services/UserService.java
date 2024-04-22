@@ -66,7 +66,7 @@ public class UserService {
         return java.util.Base64.getDecoder().decode(encodedString);
     }
 
-    public String decodeImage(byte[] byteArray) {
+    public static String decodeImage(byte[] byteArray) {
         return new String(byteArray);
     }
 
