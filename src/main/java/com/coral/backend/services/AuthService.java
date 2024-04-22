@@ -128,11 +128,14 @@ public class AuthService {
             investorDTO.setName(investor.getName());
             investorDTO.setDescription(investor.getDescription());
             investorDTO.setLocation(investor.getLocation());
+            investorDTO.setInvestorType(investor.getInvestorType());
+            investorDTO.setRangeMax(investor.getRangeMax());
+            investorDTO.setRangeMin(investor.getRangeMin());
+            investorDTO.setInvestmentCriteria(investor.getInvestmentCriteria());
             List<String> areaNames = new ArrayList<>();
             for (Area area : investor.getAreas()){
                 areaNames.add(area.getName());
             }
-            investorDTO.setAreas(areaNames);
             investorDTO.setUserType(investor.getUserType());
             return new ResponseEntity<>(investorDTO, HttpStatus.OK);
         } else if (user instanceof EnterpriseUser) {

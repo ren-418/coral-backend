@@ -37,13 +37,14 @@ public class UserService {
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
         InvestorUser user = (InvestorUser) authService.checkAuth(requestBody.getSessionToken());
+        System.out.println(requestBody.getAreas());
         if(user == null){
             return new ResponseEntity<>("You don't have auth permision", HttpStatus.UNAUTHORIZED);
         }
 
         List<Area> areaList = new ArrayList<>();
         for (String area : requestBody.getAreas()) {
-            areaList.add(areaRepository.findAreaByName(area));
+            areaList.add(areaRepository.findAreaByName(area).get());
         }
         user.setAreas(areaList);
         user.setInitialDate(getDate());
@@ -65,7 +66,7 @@ public class UserService {
         return java.util.Base64.getDecoder().decode(encodedString);
     }
 
-    public String decodeImage(byte[] byteArray) {
+    public static String decodeImage(byte[] byteArray) {
         return new String(byteArray);
     }
 
