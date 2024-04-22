@@ -2,7 +2,9 @@ package com.coral.backend.services;
 
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.dtos.SearchDTO;
+import com.coral.backend.entities.Area;
 import com.coral.backend.entities.InvestorUser;
+import com.coral.backend.repositories.AreaRepository;
 import com.coral.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +21,25 @@ public class SearchService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AreaRepository areaRepository;
+
     public ResponseEntity<Object> searchAsEnterprise(SearchDTO searchDTO) {
-        Optional<List<InvestorUser>> matchingInvestors = userRepository.findMatchingInvestors(searchDTO.getInvestorType(),searchDTO.getLocation(),searchDTO.getInterests());
+        List<Area> areas = new ArrayList<>();
+        Optional<List<InvestorUser>> matchingInvestors;
+
+        if (searchDTO.getAreas() != null){
+            for (String area : searchDTO.getAreas()) {
+                Optional<Area> areaOptional = areaRepository.findAreaByName(area);
+                if (areaOptional.isEmpty()) {
+                    return new ResponseEntity<>("Area not found", HttpStatus.NOT_FOUND);
+                }
+                areas.add(areaOptional.get());
+            }
+            matchingInvestors = userRepository.findMatchingInvestors(searchDTO.getInvestorType(),searchDTO.getLocations(), areas);
+        }else{
+            matchingInvestors = userRepository.findMatchingInvestors(searchDTO.getInvestorType(),searchDTO.getLocations(), null);
+        }
         List<InvestorDTO> FrontDataPackage = new ArrayList<>();
         if (matchingInvestors.isEmpty()){
             return new ResponseEntity<>("No matching investors found", HttpStatus.NOT_FOUND);
@@ -31,7 +50,11 @@ public class SearchService {
             dataPackage.setInvestorType(investor.getInvestorType());
             dataPackage.setLocation(investor.getLocation());
             dataPackage.setDescription(investor.getDescription());
-            dataPackage.setAreas(investor.getAreas());
+            List<String> areasString = new ArrayList<>();
+            for(Area area : investor.getAreas()){
+                areasString.add(area.getName());
+            }
+            dataPackage.setAreas(areasString);
             FrontDataPackage.add(dataPackage);
         }
         return new ResponseEntity<>(FrontDataPackage, HttpStatus.OK);

@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("SELECT u FROM InvestorUser u " +
             "LEFT JOIN u.areas a " +
             "WHERE (:investorType IS NULL OR u.investorType = :investorType) " +
-            "AND (:location IS NULL OR u.location = :location) " +
+            "AND (:location IS NULL OR u.location IN :location) " +
             "AND (:interests IS NULL OR a IN :interests) " +
             "GROUP BY u " +
             "ORDER BY " +
@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, String> {
             "(SELECT COUNT(a) FROM u.areas a WHERE a IN :interests) END) DESC")
     Optional<List<InvestorUser>> findMatchingInvestors(
             @Param("investorType") Integer investorType,
-            @Param("location") String location,
+            @Param("location") List<String> location,
             @Param("interests") List<Area> interests);
 
 }

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface AreaRepository extends JpaRepository<Area, Long> {
   Area findAreaById(long id);
-  Area findAreaByName(String name);
+  Optional<Area> findAreaByName(String name);
 }

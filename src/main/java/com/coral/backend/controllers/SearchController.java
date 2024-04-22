@@ -17,7 +17,7 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @PostMapping("/searchAsEnterprise")
+    @PostMapping("/investors")
     public ResponseEntity<Object> searchAsEnterprise(@RequestBody SearchDTO searchDTO) {
         return searchService.searchAsEnterprise(searchDTO);
     }
