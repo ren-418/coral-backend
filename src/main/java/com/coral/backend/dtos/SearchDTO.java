@@ -6,6 +6,7 @@ public class SearchDTO {
     private List<String> areas;
     private List<String> locations;
     private Integer investorType;
+    private String userName;
 
     //Setters
     public void setAreas(List<String> areas) {
@@ -17,6 +18,9 @@ public class SearchDTO {
     public void setInvestorType(Integer investorType) {
         this.investorType = investorType;
     }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
     //Getters
     public List<String> getAreas() {
         return areas;
@@ -26,5 +30,8 @@ public class SearchDTO {
     }
     public Integer getInvestorType() {
         return investorType;
+    }
+    public String getUserName() {
+        return userName;
     }
 }
