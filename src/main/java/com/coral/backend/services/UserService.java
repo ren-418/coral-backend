@@ -71,7 +71,7 @@ public class UserService {
         }
         List<Area> areaList = new ArrayList<>();
         for (String area : requestBody.getAreas()) {
-            areaList.add(areaRepository.findAreaByName(area));
+            areaList.add(areaRepository.findAreaByName(area).get());
         }
         user.setAreas(areaList);
         user.setInitialDate(getDate());
