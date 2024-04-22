@@ -1,7 +1,9 @@
 package com.coral.backend.services;
 
+import com.coral.backend.dtos.EnterpriseDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.entities.Area;
+import com.coral.backend.entities.EnterpriseUser;
 import com.coral.backend.entities.InvestorUser;
 import com.coral.backend.repositories.AreaRepository;
 import com.coral.backend.repositories.UserRepository;
@@ -48,6 +50,27 @@ public class UserService {
         user.setRangeMax(requestBody.getRangeMax());
         user.setRangeMin(requestBody.getRangeMin());
         user.setInvestmentCriteria(requestBody.getInvestmentCriteria());
+        user.setFirstLogin(false);
+        userRepository.save(user);
+        return new ResponseEntity<>("Profile created successfully", HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<Object> createEnterpriseProfile(EnterpriseDTO requestBody){
+        EnterpriseUser user = (EnterpriseUser) authService.checkAuth(requestBody.getSessionToken());
+        if(user == null){
+            return new ResponseEntity<>("You don't have auth permision", HttpStatus.UNAUTHORIZED);
+        }
+        List<Area> areaList = new ArrayList<>();
+        for (String area : requestBody.getAreas()) {
+            areaList.add(areaRepository.findAreaByName(area));
+        }
+        user.setAreas(areaList);
+        user.setInitialDate(getDate());
+        user.setProfileImage(encodeImage(requestBody.getProfileImage()));
+        user.setName(requestBody.getName());
+        user.setDescription(requestBody.getDescription());
+        user.setLocation(requestBody.getLocation());
         user.setFirstLogin(false);
         userRepository.save(user);
         return new ResponseEntity<>("Profile created successfully", HttpStatus.OK);
