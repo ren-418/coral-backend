@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class EnterpriseDTO {
-    private byte[] profileImage;
+    private String profileImage;
     private String userType;
     private long userId;
     private boolean firstLogin;
@@ -15,10 +15,14 @@ public class EnterpriseDTO {
     private String email;
     private String description;
     private String location;
-    private List<Area> areas;
+    private List<String> areas;
+    private String sessionToken;
 
     //Setters
-    public void setProfileImage(byte[] base64) {
+    public void setSessionToken(String sessionToken){
+        this.sessionToken=sessionToken;
+    }
+    public void setProfileImage(String base64) {
         this.profileImage = base64;
     }
     public void setUserId(long user_id) {
@@ -45,7 +49,7 @@ public class EnterpriseDTO {
         this.location = location;
     }
 
-    public void setAreas(List<Area> area) {
+    public void setAreas(List<String> area) {
         this.areas = area;
     }
 
@@ -54,6 +58,9 @@ public class EnterpriseDTO {
     }
 
     //Getters
+    public String getSessionToken() {
+        return sessionToken;
+    }
     public long getUserId() {
         return userId;
     }
@@ -74,7 +81,7 @@ public class EnterpriseDTO {
         return location;
     }
 
-    public List<Area> getAreas() {
+    public List<String> getAreas() {
         return areas;
     }
 
@@ -84,8 +91,7 @@ public class EnterpriseDTO {
     public String getUserType() {
         return userType;
     }
-    public byte[] getProfileImage(){
+    public String getProfileImage(){
         return profileImage;
     }
-
 }

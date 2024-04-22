@@ -2,6 +2,7 @@ package com.coral.backend.controllers;
 
 
 
+import com.coral.backend.dtos.EnterpriseDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,4 +28,8 @@ public class UserController {
         return userService.createInvestorProfile(requestBody);
     }
 
+    @PostMapping("/create-enterprise-profile")
+    public ResponseEntity<Object> createEnterpriseProfile(@RequestBody EnterpriseDTO requestBody){
+        return userService.createEnterpriseProfile(requestBody);
+    }
 }

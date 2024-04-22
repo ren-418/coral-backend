@@ -147,7 +147,11 @@ public class AuthService {
             enterpriseDTO.setName(enterprise.getName());
             enterpriseDTO.setDescription(enterprise.getDescription());
             enterpriseDTO.setLocation(enterprise.getLocation());
-            enterpriseDTO.setAreas(enterprise.getAreas());
+            List<String> areaNames = new ArrayList<>();
+            for (Area area : enterprise.getAreas()){
+                areaNames.add(area.getName());
+            }
+            enterpriseDTO.setAreas(areaNames);
             enterpriseDTO.setUserType(enterprise.getUserType());
             return new ResponseEntity<>(enterpriseDTO, HttpStatus.OK);
         } else {
