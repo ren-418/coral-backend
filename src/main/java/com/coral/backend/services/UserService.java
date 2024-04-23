@@ -77,6 +77,7 @@ public class UserService {
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
         user.setLocation(requestBody.getLocation());
+        System.out.println(requestBody.getEnterpriseType());
         if (Objects.equals(requestBody.getEnterpriseType(), "Community")){
             user.setEnterpriseType("Community");
             user.setGoal(requestBody.getGoal());

@@ -53,11 +53,14 @@ public class FeedService {
       sameLocationEnterprisesDTO.add(enterpriseDTO);
     }
 
+    List<Long> sameAreasEnterprisesIds = new ArrayList<>();
+
     for (Area area : userAreas) {
       List<EnterpriseUser> matchingAreaEnterprises = enterpriseUserRepository.findAllByAreas(area);
       for (EnterpriseUser enterprise : matchingAreaEnterprises) {
         EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
         enterpriseDTO.setName(enterprise.getName());
+        enterpriseDTO.setUserId(enterprise.getUserId());
         enterpriseDTO.setDescription(enterprise.getDescription());
         enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
         List<String> areaNames = new ArrayList<>();
@@ -70,7 +73,10 @@ public class FeedService {
         enterpriseDTO.setGoal(enterprise.getGoal());
         enterpriseDTO.setMinimumInvestment(enterprise.getMinimumInvestment());
         enterpriseDTO.setTotalProfitReturn(enterprise.getTotalProfitReturn());
-        sameAreasEnterprisesDTO.add(enterpriseDTO);
+        if(!sameAreasEnterprisesIds.contains(enterprise.getUserId())){
+          sameAreasEnterprisesIds.add(enterprise.getUserId());
+          sameAreasEnterprisesDTO.add(enterpriseDTO);
+        }
       }
 
     }
