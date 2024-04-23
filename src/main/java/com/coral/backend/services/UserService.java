@@ -7,8 +7,6 @@ import com.coral.backend.entities.EnterpriseUser;
 import com.coral.backend.entities.InvestorUser;
 import com.coral.backend.repositories.AreaRepository;
 
-import com.coral.backend.entities.ResetToken;
-import com.coral.backend.entities.User;
 import com.coral.backend.repositories.ResetTokenRepository;
 import com.coral.backend.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -79,13 +77,13 @@ public class UserService {
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
         user.setLocation(requestBody.getLocation());
-        if (Objects.equals(requestBody.getInvestmentType(), "Community")){
-            user.setInvestmentType("Community");
+        if (Objects.equals(requestBody.getEnterpriseType(), "Community")){
+            user.setEnterpriseType("Community");
             user.setGoal(requestBody.getGoal());
             user.setMinimumInvestment(requestBody.getMinimumInvestment());
             user.setTotalProfitReturn(requestBody.getTotalProfitReturn());
         } else {
-            user.setInvestmentType("Custom");
+            user.setEnterpriseType("Custom");
         }
         user.setFirstLogin(false);
         userRepository.save(user);
