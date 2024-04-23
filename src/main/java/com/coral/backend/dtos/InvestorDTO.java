@@ -1,41 +1,44 @@
 package com.coral.backend.dtos;
 
 import com.coral.backend.entities.Area;
-import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
 
 public class InvestorDTO {
-    private int investor_type;
-    private String investment_criteria;
-    private int range_min;
-    private int range_max;
+    private String profilePicture;
+    private int investorType;
+    private String investmentCriteria;
+    private int rangeMin;
+    private int rangeMax;
     private long userId;
     private boolean firstLogin;
     private String name;
     private String email;
     private String description;
     private String location;
-    private Date initial_date;
-    private List<Area> areas;
+    private List<String> areas;
     private String userType;
+    private String sessionToken;
 
     //Setters
+    public void setProfilePicture(String base64) {
+        this.profilePicture = base64;
+    }
     public void setInvestorType(int investor_type) {
-        this.investor_type = investor_type;
+        this.investorType = investor_type;
     }
 
     public void setInvestmentCriteria(String investment_criteria) {
-        this.investment_criteria = investment_criteria;
+        this.investmentCriteria = investment_criteria;
     }
 
     public void setRangeMin(int range_min) {
-        this.range_min = range_min;
+        this.rangeMin = range_min;
     }
 
     public void setRangeMax(int range_max) {
-        this.range_max = range_max;
+        this.rangeMax = range_max;
     }
 
     public void setUserType(String userType) {
@@ -44,19 +47,19 @@ public class InvestorDTO {
 
     //Getters
     public int getInvestorType() {
-        return investor_type;
+        return investorType;
     }
 
     public String getInvestmentCriteria() {
-        return investment_criteria;
+        return investmentCriteria;
     }
 
     public int getRangeMin() {
-        return range_min;
+        return rangeMin;
     }
 
     public int getRangeMax() {
-        return range_max;
+        return rangeMax;
     }
 
     public void setUserId(long user_id) {
@@ -82,15 +85,18 @@ public class InvestorDTO {
         this.location = location;
     }
 
-    public void setInitialDate(Date initial_date) {
-        this.initial_date = initial_date;
-    }
-
-    public void setAreas(List<Area> area) {
+    public void setAreas(List<String> area) {
         this.areas = area;
     }
 
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
+
     //Getters
+    public String getProfilePicture(){
+        return profilePicture;
+    }
     public long getUserId() {
         return userId;
     }
@@ -111,11 +117,7 @@ public class InvestorDTO {
         return location;
     }
 
-    public Date getInitialDate() {
-        return initial_date;
-    }
-
-    public List<Area> getAreas() {
+    public List<String> getAreas() {
         return areas;
     }
 
@@ -125,5 +127,9 @@ public class InvestorDTO {
 
     public String getUserType() {
         return userType;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
     }
 }

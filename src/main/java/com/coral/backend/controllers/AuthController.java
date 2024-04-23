@@ -1,8 +1,6 @@
 package com.coral.backend.controllers;
 
-import com.coral.backend.dtos.CheckSessionDTO;
-import com.coral.backend.dtos.LoginDTO;
-import com.coral.backend.dtos.RegisterDTO;
+import com.coral.backend.dtos.*;
 import com.coral.backend.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +24,28 @@ public class AuthController {
         return authService.login(userDTO);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(@RequestBody LogoutDTO logoutDTO) {
+        return authService.logout(logoutDTO);
+    }
+
     @PostMapping("/check-user")
     public ResponseEntity<Object> checkUser(@RequestBody CheckSessionDTO checkSessionDTO) {
         System.out.println(checkSessionDTO.getSessionToken());
         return authService.checkUser(checkSessionDTO);
+    }
+    @PostMapping("/reset-password/send-email")
+    public ResponseEntity<Object> resetPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+        return authService.resetPassword(forgotPasswordDTO);
+    }
+
+    @PostMapping("/reset-password/verify-token")
+    public ResponseEntity<Object> verifyToken(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+        return authService.checkIfTokenCoincidesWithUser(forgotPasswordDTO);
+    }
+
+    @PostMapping("/reset-password/change-password")
+    public ResponseEntity<Object> changePassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+        return authService.changePassword(forgotPasswordDTO);
     }
 }

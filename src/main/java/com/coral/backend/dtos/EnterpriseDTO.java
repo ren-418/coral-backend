@@ -1,12 +1,9 @@
 package com.coral.backend.dtos;
 
-import com.coral.backend.entities.Area;
-import jakarta.persistence.*;
-
-import java.util.Date;
 import java.util.List;
 
 public class EnterpriseDTO {
+    private String profileImage;
     private String userType;
     private long userId;
     private boolean firstLogin;
@@ -14,10 +11,20 @@ public class EnterpriseDTO {
     private String email;
     private String description;
     private String location;
-    private Date initial_date;
-    private List<Area> areas;
+    private List<String> areas;
+    private String sessionToken;
+    String enterpriseType;
+    int goal;
+    int minimumInvestment;
+    int totalProfitReturn;
 
     //Setters
+    public void setSessionToken(String sessionToken){
+        this.sessionToken=sessionToken;
+    }
+    public void setProfileImage(String base64) {
+        this.profileImage = base64;
+    }
     public void setUserId(long user_id) {
         this.userId = user_id;
     }
@@ -42,11 +49,7 @@ public class EnterpriseDTO {
         this.location = location;
     }
 
-    public void setInitialDate(Date initial_date) {
-        this.initial_date = initial_date;
-    }
-
-    public void setAreas(List<Area> area) {
+    public void setAreas(List<String> area) {
         this.areas = area;
     }
 
@@ -54,7 +57,40 @@ public class EnterpriseDTO {
         this.userType = userType;
     }
 
+    public void setEnterpriseType(String enterpriseType) {
+        this.enterpriseType = enterpriseType;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
+    public void setMinimumInvestment(int minimumInvestment) {
+        this.minimumInvestment = minimumInvestment;
+    }
+
+    public void setTotalProfitReturn(int totalProfitReturn) {
+        this.totalProfitReturn = totalProfitReturn;
+    }
+
+
+
     //Getters
+    public int getMinimumInvestment() {
+        return minimumInvestment;
+    }
+    public int getTotalProfitReturn() {
+        return totalProfitReturn;
+    }
+    public int getGoal() {
+        return goal;
+    }
+    public String getEnterpriseType() {
+        return enterpriseType;
+    }
+    public String getSessionToken() {
+        return sessionToken;
+    }
     public long getUserId() {
         return userId;
     }
@@ -75,11 +111,7 @@ public class EnterpriseDTO {
         return location;
     }
 
-    public Date getInitialDate() {
-        return initial_date;
-    }
-
-    public List<Area> getAreas() {
+    public List<String> getAreas() {
         return areas;
     }
 
@@ -89,5 +121,7 @@ public class EnterpriseDTO {
     public String getUserType() {
         return userType;
     }
-
+    public String getProfileImage(){
+        return profileImage;
+    }
 }
