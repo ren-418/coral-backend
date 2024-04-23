@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecommendedEnterprisesDTO {
-  private List<EnterpriseUser> sameAreas;
-  private List<EnterpriseUser> sameLocation;
+  private List<EnterpriseDTO> sameAreas;
+  private List<EnterpriseDTO> sameLocation;
 
-  public List<EnterpriseUser> getSameAreas() {
+  public List<EnterpriseDTO> getSameAreas() {
     return sameAreas;
   }
 
-  public void setSameAreas(List<EnterpriseUser> sameAreas){
+  public void setSameAreas(List<EnterpriseDTO> sameAreas){
     this.sameAreas = sameAreas;
   }
 
-  public void setSameLocation(List<EnterpriseUser> sameLocation){
+  public void setSameLocation(List<EnterpriseDTO> sameLocation){
     this.sameLocation = sameLocation;
   }
-  public List<EnterpriseUser> getSameLocation() {
+  public List<EnterpriseDTO> getSameLocation() {
     return sameLocation;
   }
 }

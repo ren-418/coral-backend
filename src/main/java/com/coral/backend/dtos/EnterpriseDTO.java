@@ -1,9 +1,5 @@
 package com.coral.backend.dtos;
 
-import com.coral.backend.entities.Area;
-import jakarta.persistence.*;
-
-import java.util.Date;
 import java.util.List;
 
 public class EnterpriseDTO {
@@ -17,7 +13,7 @@ public class EnterpriseDTO {
     private String location;
     private List<String> areas;
     private String sessionToken;
-    String investmentType;
+    String enterpriseType;
     int goal;
     int minimumInvestment;
     int totalProfitReturn;
@@ -61,6 +57,24 @@ public class EnterpriseDTO {
         this.userType = userType;
     }
 
+    public void setEnterpriseType(String enterpriseType) {
+        this.enterpriseType = enterpriseType;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
+    public void setMinimumInvestment(int minimumInvestment) {
+        this.minimumInvestment = minimumInvestment;
+    }
+
+    public void setTotalProfitReturn(int totalProfitReturn) {
+        this.totalProfitReturn = totalProfitReturn;
+    }
+
+
+
     //Getters
     public int getMinimumInvestment() {
         return minimumInvestment;
@@ -71,8 +85,8 @@ public class EnterpriseDTO {
     public int getGoal() {
         return goal;
     }
-    public String getInvestmentType() {
-        return investmentType;
+    public String getEnterpriseType() {
+        return enterpriseType;
     }
     public String getSessionToken() {
         return sessionToken;

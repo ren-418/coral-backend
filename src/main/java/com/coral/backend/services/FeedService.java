@@ -1,6 +1,7 @@
 package com.coral.backend.services;
 
 import com.coral.backend.dtos.CheckSessionDTO;
+import com.coral.backend.dtos.EnterpriseDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.dtos.RecommendedEnterprisesDTO;
 import com.coral.backend.entities.Area;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.coral.backend.services.UserService.decodeImage;
+
 @Service
 public class FeedService {
   @Autowired
@@ -25,22 +28,56 @@ public class FeedService {
   private EnterpriseUserRepository enterpriseUserRepository;
 
   public ResponseEntity<Object> getRecommendedEnterprises(CheckSessionDTO sessionDTO) {
-    System.out.println("entro");
     InvestorUser user = (InvestorUser) authService.checkAuth(sessionDTO.getSessionToken());
     List<Area> userAreas = user.getAreas();
     String location = user.getLocation();
-    List<EnterpriseUser> sameAreasEnterprises = new ArrayList<>();
+    List<EnterpriseDTO> sameAreasEnterprisesDTO = new ArrayList<>();
     List<EnterpriseUser> sameLocationEnterprises = enterpriseUserRepository.findAllByLocation(location);
+    List<EnterpriseDTO> sameLocationEnterprisesDTO = new ArrayList<>();
+
+    for (EnterpriseUser enterprise : sameLocationEnterprises) {
+      EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+      enterpriseDTO.setName(enterprise.getName());
+      enterpriseDTO.setDescription(enterprise.getDescription());
+      enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
+      List<String> areaNames = new ArrayList<>();
+      for (Area a : enterprise.getAreas()){
+        areaNames.add(a.getName());
+      }
+      enterpriseDTO.setAreas(areaNames);
+      enterpriseDTO.setLocation(enterprise.getLocation());
+      enterpriseDTO.setEnterpriseType(enterprise.getEnterpriseType());
+      enterpriseDTO.setGoal(enterprise.getGoal());
+      enterpriseDTO.setMinimumInvestment(enterprise.getMinimumInvestment());
+      enterpriseDTO.setTotalProfitReturn(enterprise.getTotalProfitReturn());
+      sameLocationEnterprisesDTO.add(enterpriseDTO);
+    }
 
     for (Area area : userAreas) {
       List<EnterpriseUser> matchingAreaEnterprises = enterpriseUserRepository.findAllByAreas(area);
-      sameAreasEnterprises.addAll(matchingAreaEnterprises);
+      for (EnterpriseUser enterprise : matchingAreaEnterprises) {
+        EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+        enterpriseDTO.setName(enterprise.getName());
+        enterpriseDTO.setDescription(enterprise.getDescription());
+        enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
+        List<String> areaNames = new ArrayList<>();
+        for (Area a : enterprise.getAreas()){
+          areaNames.add(a.getName());
+        }
+        enterpriseDTO.setAreas(areaNames);
+        enterpriseDTO.setLocation(enterprise.getLocation());
+        enterpriseDTO.setEnterpriseType(enterprise.getEnterpriseType());
+        enterpriseDTO.setGoal(enterprise.getGoal());
+        enterpriseDTO.setMinimumInvestment(enterprise.getMinimumInvestment());
+        enterpriseDTO.setTotalProfitReturn(enterprise.getTotalProfitReturn());
+        sameAreasEnterprisesDTO.add(enterpriseDTO);
+      }
+
     }
 
     RecommendedEnterprisesDTO frontDataPackage = new RecommendedEnterprisesDTO();
-    frontDataPackage.setSameAreas(sameAreasEnterprises);
-    frontDataPackage.setSameLocation(sameLocationEnterprises);
-    System.out.println("preReturn");
+    frontDataPackage.setSameAreas(sameAreasEnterprisesDTO);
+    frontDataPackage.setSameLocation(sameLocationEnterprisesDTO);
     return new ResponseEntity<>(frontDataPackage, HttpStatus.OK);
   }
 }

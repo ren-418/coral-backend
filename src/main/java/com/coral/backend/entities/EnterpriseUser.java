@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class EnterpriseUser extends User {
-    String investmentType;
+    String enterpriseType;
     int goal;
     int minimumInvestment;
     int totalProfitReturn;
@@ -23,13 +23,13 @@ public class EnterpriseUser extends User {
     public void setTotalProfitReturn(int totalProfitReturn) {
         this.totalProfitReturn = totalProfitReturn;
     }
-    public void setInvestmentType(String investmentType) {
-        this.investmentType = investmentType;
+    public void setEnterpriseType(String enterpriseType) {
+        this.enterpriseType = enterpriseType;
     }
 
     // Getters
-    public String getInvestmentType() {
-        return investmentType;
+    public String getEnterpriseType() {
+        return enterpriseType;
     }
     public int getGoal() {
         return goal;
