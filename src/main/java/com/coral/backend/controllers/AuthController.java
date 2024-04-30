@@ -48,4 +48,9 @@ public class AuthController {
     public ResponseEntity<Object> changePassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
         return authService.changePassword(forgotPasswordDTO);
     }
+
+    @PostMapping("/delete-user")
+    public ResponseEntity<Object> changePassword(@RequestBody CheckSessionDTO sessionDTO) {
+        return authService.deleteUser(sessionDTO);
+    }
 }

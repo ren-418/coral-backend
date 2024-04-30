@@ -25,6 +25,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.coral.backend.services.UserService.decodeImage;
+
 @Service
 public class AuthService {
 
@@ -132,11 +134,15 @@ public class AuthService {
             investorDTO.setRangeMax(investor.getRangeMax());
             investorDTO.setRangeMin(investor.getRangeMin());
             investorDTO.setInvestmentCriteria(investor.getInvestmentCriteria());
+            if(investor.getProfileImage() != null){
+                investorDTO.setProfilePicture(decodeImage(investor.getProfileImage()));
+            }
             List<String> areaNames = new ArrayList<>();
             for (Area area : investor.getAreas()){
                 areaNames.add(area.getName());
             }
             investorDTO.setUserType(investor.getUserType());
+            investorDTO.setAreas(areaNames);
             return new ResponseEntity<>(investorDTO, HttpStatus.OK);
         } else if (user instanceof EnterpriseUser) {
             EnterpriseUser enterprise = (EnterpriseUser) user;
@@ -147,6 +153,10 @@ public class AuthService {
             enterpriseDTO.setName(enterprise.getName());
             enterpriseDTO.setDescription(enterprise.getDescription());
             enterpriseDTO.setLocation(enterprise.getLocation());
+            if(enterprise.getProfileImage() != null){
+                enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
+            }
+
             List<String> areaNames = new ArrayList<>();
             for (Area area : enterprise.getAreas()){
                 areaNames.add(area.getName());
@@ -243,5 +253,19 @@ public class AuthService {
         email.setTo(user.getEmail());
         email.setFrom("coral.recoveryteam@gmail.com");
         return email;
+    }
+
+    public ResponseEntity<Object> deleteUser(CheckSessionDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isPresent()){
+            User user = optionalSession.get().getUser();
+            user.setAreas(null);
+            sessionRepository.delete(optionalSession.get()
+            );
+            userRepository.save(user);
+            userRepository.delete(user);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("User token not found", HttpStatus.NOT_FOUND);
     }
 }

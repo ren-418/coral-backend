@@ -124,4 +124,5 @@ public class EnterpriseDTO {
     public String getProfileImage(){
         return profileImage;
     }
+
 }
