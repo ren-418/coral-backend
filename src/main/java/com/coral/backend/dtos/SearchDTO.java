@@ -7,6 +7,8 @@ public class SearchDTO {
     private List<String> locations;
     private Integer investorType;
     private String userName;
+    private String enterpriseType;
+
 
     //Setters
     public void setAreas(List<String> areas) {
@@ -33,5 +35,8 @@ public class SearchDTO {
     }
     public String getUserName() {
         return userName;
+    }
+    public String getEnterpriseType() {
+        return enterpriseType;
     }
 }

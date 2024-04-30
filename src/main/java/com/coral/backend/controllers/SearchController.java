@@ -18,7 +18,12 @@ public class SearchController {
     private SearchService searchService;
 
     @PostMapping("/investors")
-    public ResponseEntity<Object> searchAsEnterprise(@RequestBody SearchDTO searchDTO) {
-        return searchService.searchAsEnterprise(searchDTO);
+    public ResponseEntity<Object> searchInvestors(@RequestBody SearchDTO searchDTO) {
+        return searchService.searchInvestors(searchDTO);
+    }
+
+    @PostMapping("/enterprises")
+    public ResponseEntity<Object> searchEnterprises(@RequestBody SearchDTO searchDTO) {
+        return searchService.searchEnterprises(searchDTO);
     }
 }
