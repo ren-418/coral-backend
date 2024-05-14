@@ -1,5 +1,7 @@
 package com.coral.backend.dtos;
 
+import com.coral.backend.entities.InvestorUser;
+
 import java.util.List;
 
 public class EnterpriseDTO {
@@ -14,10 +16,11 @@ public class EnterpriseDTO {
     private List<String> areas;
     private String sessionToken;
     String enterpriseType;
-    int goal;
-    int minimumInvestment;
-    int totalProfitReturn;
-    int totalCollected;
+    private int goal;
+    private int minimumInvestment;
+    private int totalProfitReturn;
+    private int totalCollected;
+    private List<InvestorUser> investors;
 
     //Setters
 
@@ -132,5 +135,4 @@ public class EnterpriseDTO {
     public String getProfileImage(){
         return profileImage;
     }
-
 }

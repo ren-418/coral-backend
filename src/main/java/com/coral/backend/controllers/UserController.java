@@ -37,4 +37,9 @@ public class UserController {
     public ResponseEntity<Object> getEnterpriseProfile(@RequestBody EnterpriseDTO requestBody){
         return userService.getEnterpriseProfile(requestBody);
     }
+
+    @PostMapping("/invest")
+    public ResponseEntity<Object> investInEnterprise(@RequestBody EnterpriseDTO requestBody){
+        return userService.investInEnterprise(requestBody);
+    }
 }

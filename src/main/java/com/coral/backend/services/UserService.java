@@ -125,6 +125,9 @@ public class UserService {
         toReturnDTO.setLocation(enterpriseUser.getLocation());
         toReturnDTO.setTotalCollected(enterpriseUser.getTotalCollected());
         toReturnDTO.setGoal(enterpriseUser.getGoal());
+        toReturnDTO.setName(enterpriseUser.getName());
+        toReturnDTO.setUserId(enterpriseUser.getUserId());
+        toReturnDTO.setEnterpriseType(enterpriseUser.getEnterpriseType());
         List<String> areaNames = new ArrayList<>();
         for (Area area : enterpriseUser.getAreas()){
             areaNames.add(area.getName());
@@ -132,5 +135,17 @@ public class UserService {
         toReturnDTO.setAreas(areaNames);
         toReturnDTO.setDescription(enterpriseUser.getDescription());
         return toReturnDTO;
+    }
+
+    public ResponseEntity<Object> investInEnterprise(EnterpriseDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+
+        InvestorUser user = (InvestorUser) optionalSession.get().getUser();
+
+
     }
 }
