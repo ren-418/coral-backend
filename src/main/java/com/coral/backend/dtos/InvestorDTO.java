@@ -1,6 +1,7 @@
 package com.coral.backend.dtos;
 
 import com.coral.backend.entities.Area;
+import com.coral.backend.entities.EnterpriseUser;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ public class InvestorDTO {
     private List<String> areas;
     private String userType;
     private String sessionToken;
+    private List<EnterpriseUser> enterprises;
 
     //Setters
     public void setProfilePicture(String base64) {

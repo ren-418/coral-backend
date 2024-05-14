@@ -3,6 +3,7 @@ package com.coral.backend.controllers;
 
 
 import com.coral.backend.dtos.EnterpriseDTO;
+import com.coral.backend.dtos.InvestDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/invest")
-    public ResponseEntity<Object> investInEnterprise(@RequestBody EnterpriseDTO requestBody){
+    public ResponseEntity<Object> investInEnterprise(@RequestBody InvestDTO requestBody){
         return userService.investInEnterprise(requestBody);
     }
 }

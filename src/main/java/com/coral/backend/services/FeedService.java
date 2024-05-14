@@ -37,6 +37,7 @@ public class FeedService {
 
     for (EnterpriseUser enterprise : sameLocationEnterprises) {
       EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+      enterpriseDTO.setUserId(enterprise.getUserId());
       enterpriseDTO.setName(enterprise.getName());
       enterpriseDTO.setDescription(enterprise.getDescription());
       enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
