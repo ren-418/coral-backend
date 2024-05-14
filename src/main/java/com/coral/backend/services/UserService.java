@@ -121,6 +121,8 @@ public class UserService {
     private static EnterpriseDTO getEnterpriseDTO(EnterpriseUser enterpriseUser) {
         EnterpriseDTO toReturnDTO = new EnterpriseDTO();
 
+        toReturnDTO.setEnterpriseType(enterpriseUser.getEnterpriseType());
+        toReturnDTO.setName(enterpriseUser.getName());
         toReturnDTO.setProfileImage(decodeImage(enterpriseUser.getProfileImage()));
         toReturnDTO.setLocation(enterpriseUser.getLocation());
         toReturnDTO.setTotalCollected(enterpriseUser.getTotalCollected());
@@ -130,6 +132,7 @@ public class UserService {
         }
         toReturnDTO.setAreas(areaNames);
         toReturnDTO.setDescription(enterpriseUser.getDescription());
+        toReturnDTO.setGoal(enterpriseUser.getGoal());
         return toReturnDTO;
     }
 }
