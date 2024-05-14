@@ -108,7 +108,7 @@ public class UserService {
         Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
 
         if (optionalSession.isEmpty()) {
-            return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
         }
 
         EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getUserId());
@@ -124,6 +124,7 @@ public class UserService {
         toReturnDTO.setProfileImage(decodeImage(enterpriseUser.getProfileImage()));
         toReturnDTO.setLocation(enterpriseUser.getLocation());
         toReturnDTO.setTotalCollected(enterpriseUser.getTotalCollected());
+        toReturnDTO.setGoal(enterpriseUser.getGoal());
         List<String> areaNames = new ArrayList<>();
         for (Area area : enterpriseUser.getAreas()){
             areaNames.add(area.getName());
