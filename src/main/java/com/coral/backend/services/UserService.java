@@ -1,6 +1,7 @@
 package com.coral.backend.services;
 
 import com.coral.backend.dtos.EnterpriseDTO;
+import com.coral.backend.dtos.InvestDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.entities.*;
 import com.coral.backend.repositories.*;
@@ -34,6 +35,9 @@ public class UserService {
 
     @Autowired
     private EnterpriseUserRepository enterpriseUserRepository;
+
+    @Autowired
+    private InvestmentRepository investmentRepository;
   
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
@@ -108,7 +112,7 @@ public class UserService {
         Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
 
         if (optionalSession.isEmpty()) {
-            return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
         }
 
         EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getUserId());
@@ -121,15 +125,53 @@ public class UserService {
     private static EnterpriseDTO getEnterpriseDTO(EnterpriseUser enterpriseUser) {
         EnterpriseDTO toReturnDTO = new EnterpriseDTO();
 
+        toReturnDTO.setEnterpriseType(enterpriseUser.getEnterpriseType());
+        toReturnDTO.setName(enterpriseUser.getName());
         toReturnDTO.setProfileImage(decodeImage(enterpriseUser.getProfileImage()));
         toReturnDTO.setLocation(enterpriseUser.getLocation());
         toReturnDTO.setTotalCollected(enterpriseUser.getTotalCollected());
+        toReturnDTO.setGoal(enterpriseUser.getGoal());
+        toReturnDTO.setName(enterpriseUser.getName());
+        toReturnDTO.setUserId(enterpriseUser.getUserId());
+        toReturnDTO.setEnterpriseType(enterpriseUser.getEnterpriseType());
         List<String> areaNames = new ArrayList<>();
         for (Area area : enterpriseUser.getAreas()){
             areaNames.add(area.getName());
         }
         toReturnDTO.setAreas(areaNames);
         toReturnDTO.setDescription(enterpriseUser.getDescription());
+        toReturnDTO.setGoal(enterpriseUser.getGoal());
         return toReturnDTO;
+    }
+
+    public ResponseEntity<Object> investInEnterprise(InvestDTO requestBody) {
+        // Check session validation
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+        // Get investor and enterprise
+        InvestorUser investor = (InvestorUser) optionalSession.get().getUser();
+        EnterpriseUser enterprise = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getEnterpriseId());
+
+        if (enterprise.getEnterpriseType() == "Community") {
+            enterprise.setTotalCollected(enterprise.getTotalCollected()+ requestBody.getAmount());
+        }
+        // If new investment, Create investmentRelationship and add values
+        Optional<Investment> optionalInvestment = investmentRepository.findInvestmentByInvestorAndEnterprise(investor, enterprise);
+        if (optionalInvestment.isEmpty()) {
+            Investment investment = new Investment();
+            investment.setEnterprise(enterprise);
+            investment.setInvestor(investor);
+            investment.setAmountInvested(requestBody.getAmount());
+            investmentRepository.save(investment);
+        } else {
+            // If investment exists, update amount invested
+            Investment investment = optionalInvestment.get();
+            investment.setAmountInvested(investment.getAmountInvested() + requestBody.getAmount());
+            investmentRepository.save(investment);
+        }
+        // Return success
+        return new ResponseEntity<>("Investment made successfully", HttpStatus.OK);
     }
 }
