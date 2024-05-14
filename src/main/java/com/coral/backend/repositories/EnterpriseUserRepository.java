@@ -24,4 +24,6 @@ public interface EnterpriseUserRepository extends JpaRepository<EnterpriseUser, 
   List<EnterpriseUser> findAllByLocation(String location);
 
   List<EnterpriseUser> findAll();
+
+  EnterpriseUser findEnterpriseUserByUserId(long userId);
 }

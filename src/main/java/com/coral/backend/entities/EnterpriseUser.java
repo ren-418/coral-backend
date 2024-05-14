@@ -9,11 +9,18 @@ public class EnterpriseUser extends User {
     int goal;
     int minimumInvestment;
     int totalProfitReturn;
+    int totalCollected;
 
     @Column(insertable=false, updatable=false)
     private String userType = "enterprise";
 
     // Setters
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+    public void setTotalCollected(int totalCollected) {
+        this.totalCollected = totalCollected;
+    }
     public void setGoal(int goal) {
         this.goal = goal;
     }
@@ -28,6 +35,9 @@ public class EnterpriseUser extends User {
     }
 
     // Getters
+    public int getTotalCollected() {
+        return totalCollected;
+    }
     public String getEnterpriseType() {
         return enterpriseType;
     }

@@ -225,6 +225,7 @@ public class SearchService {
                 dataPackage.setGoal(enterprise.getGoal());
                 dataPackage.setMinimumInvestment(enterprise.getMinimumInvestment());
                 dataPackage.setTotalProfitReturn(enterprise.getTotalProfitReturn());
+                dataPackage.setTotalCollected(enterprise.getTotalCollected());
 
                 FrontDataPackage.add(dataPackage);
             }

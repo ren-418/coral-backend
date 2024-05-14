@@ -2,13 +2,9 @@ package com.coral.backend.services;
 
 import com.coral.backend.dtos.EnterpriseDTO;
 import com.coral.backend.dtos.InvestorDTO;
-import com.coral.backend.entities.Area;
-import com.coral.backend.entities.EnterpriseUser;
-import com.coral.backend.entities.InvestorUser;
-import com.coral.backend.repositories.AreaRepository;
+import com.coral.backend.entities.*;
+import com.coral.backend.repositories.*;
 
-import com.coral.backend.repositories.ResetTokenRepository;
-import com.coral.backend.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +28,16 @@ public class UserService {
   
     @Autowired
     private ResetTokenRepository passwordTokenRepository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
+    private EnterpriseUserRepository enterpriseUserRepository;
   
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
         InvestorUser user = (InvestorUser) authService.checkAuth(requestBody.getSessionToken());
-        System.out.println(requestBody.getAreas());
         if(user == null){
             return new ResponseEntity<>("You don't have auth permision", HttpStatus.UNAUTHORIZED);
         }
@@ -101,5 +102,34 @@ public class UserService {
 
     public LocalDate getDate(){
         return LocalDate.now();
+    }
+
+    public ResponseEntity<Object> getEnterpriseProfile(EnterpriseDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
+        }
+
+        EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getUserId());
+
+        EnterpriseDTO toReturnDTO = getEnterpriseDTO(enterpriseUser);
+
+        return new ResponseEntity<>(toReturnDTO, HttpStatus.OK);
+    }
+
+    private static EnterpriseDTO getEnterpriseDTO(EnterpriseUser enterpriseUser) {
+        EnterpriseDTO toReturnDTO = new EnterpriseDTO();
+
+        toReturnDTO.setProfileImage(decodeImage(enterpriseUser.getProfileImage()));
+        toReturnDTO.setLocation(enterpriseUser.getLocation());
+        toReturnDTO.setTotalCollected(enterpriseUser.getTotalCollected());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : enterpriseUser.getAreas()){
+            areaNames.add(area.getName());
+        }
+        toReturnDTO.setAreas(areaNames);
+        toReturnDTO.setDescription(enterpriseUser.getDescription());
+        return toReturnDTO;
     }
 }

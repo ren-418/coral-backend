@@ -50,6 +50,7 @@ public class FeedService {
       enterpriseDTO.setGoal(enterprise.getGoal());
       enterpriseDTO.setMinimumInvestment(enterprise.getMinimumInvestment());
       enterpriseDTO.setTotalProfitReturn(enterprise.getTotalProfitReturn());
+      enterpriseDTO.setTotalCollected(enterprise.getTotalCollected());
       sameLocationEnterprisesDTO.add(enterpriseDTO);
     }
 
@@ -73,6 +74,7 @@ public class FeedService {
         enterpriseDTO.setGoal(enterprise.getGoal());
         enterpriseDTO.setMinimumInvestment(enterprise.getMinimumInvestment());
         enterpriseDTO.setTotalProfitReturn(enterprise.getTotalProfitReturn());
+        enterpriseDTO.setTotalCollected(enterprise.getTotalCollected());
         if(!sameAreasEnterprisesIds.contains(enterprise.getUserId())){
           sameAreasEnterprisesIds.add(enterprise.getUserId());
           sameAreasEnterprisesDTO.add(enterpriseDTO);

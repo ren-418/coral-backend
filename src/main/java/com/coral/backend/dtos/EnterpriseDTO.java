@@ -17,8 +17,13 @@ public class EnterpriseDTO {
     int goal;
     int minimumInvestment;
     int totalProfitReturn;
+    int totalCollected;
 
     //Setters
+
+    public void setTotalCollected(int totalCollected) {
+        this.totalCollected = totalCollected;
+    }
     public void setSessionToken(String sessionToken){
         this.sessionToken=sessionToken;
     }
@@ -76,6 +81,9 @@ public class EnterpriseDTO {
 
 
     //Getters
+    public int getTotalCollected() {
+        return totalCollected;
+    }
     public int getMinimumInvestment() {
         return minimumInvestment;
     }

@@ -32,4 +32,9 @@ public class UserController {
     public ResponseEntity<Object> createEnterpriseProfile(@RequestBody EnterpriseDTO requestBody){
         return userService.createEnterpriseProfile(requestBody);
     }
+
+    @PostMapping("/enterprise")
+    public ResponseEntity<Object> getEnterpriseProfile(@RequestBody EnterpriseDTO requestBody){
+        return userService.getEnterpriseProfile(requestBody);
+    }
 }
