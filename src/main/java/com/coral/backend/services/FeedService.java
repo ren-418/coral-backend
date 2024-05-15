@@ -1,15 +1,13 @@
 package com.coral.backend.services;
 
-import com.coral.backend.dtos.CheckSessionDTO;
-import com.coral.backend.dtos.EnterpriseDTO;
-import com.coral.backend.dtos.InvestorDTO;
-import com.coral.backend.dtos.RecommendedEnterprisesDTO;
+import com.coral.backend.dtos.*;
 import com.coral.backend.entities.Area;
 import com.coral.backend.entities.EnterpriseUser;
 import com.coral.backend.entities.InvestorUser;
 import com.coral.backend.entities.User;
 import com.coral.backend.repositories.AreaRepository;
 import com.coral.backend.repositories.EnterpriseUserRepository;
+import com.coral.backend.repositories.InvestorUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +24,9 @@ public class FeedService {
 
   @Autowired
   private EnterpriseUserRepository enterpriseUserRepository;
+
+  @Autowired
+  private InvestorUserRepository investorUserRepository;
 
   public ResponseEntity<Object> getRecommendedEnterprises(CheckSessionDTO sessionDTO) {
     InvestorUser user = (InvestorUser) authService.checkAuth(sessionDTO.getSessionToken());
@@ -87,6 +88,51 @@ public class FeedService {
     RecommendedEnterprisesDTO frontDataPackage = new RecommendedEnterprisesDTO();
     frontDataPackage.setSameAreas(sameAreasEnterprisesDTO);
     frontDataPackage.setSameLocation(sameLocationEnterprisesDTO);
+    return new ResponseEntity<>(frontDataPackage, HttpStatus.OK);
+  }
+
+  public ResponseEntity<Object> getRecommendedInvestors(CheckSessionDTO sessionDTO) {
+    InvestorUser user = (InvestorUser) authService.checkAuth(sessionDTO.getSessionToken());
+    List<Area> userAreas = user.getAreas();
+    String location = user.getLocation();
+    List<InvestorDTO> sameAreasInvestorsDTO = new ArrayList<>();
+    List<InvestorUser> sameLocationInvestors = investorUserRepository.findAllByLocation(location);
+    List<InvestorDTO> sameLocationInvestorsDTO = new ArrayList<>();
+
+    for (InvestorUser investor : sameLocationInvestors) {
+      InvestorDTO investorDTO = new InvestorDTO();
+      investorDTO.setUserId(investor.getUserId());
+      investorDTO.setName(investor.getName());
+      investorDTO.setInvestorType(investor.getInvestorType());
+      investorDTO.setInvestmentCriteria(investor.getInvestmentCriteria());
+      investorDTO.setRangeMin(investor.getRangeMin());
+      investorDTO.setRangeMax(investor.getRangeMax());
+      sameLocationInvestorsDTO.add(investorDTO);
+    }
+
+    List<Long> sameAreasInvestorsIds = new ArrayList<>();
+
+    for (Area area : userAreas) {
+      List<InvestorUser> matchingAreaInvestors = investorUserRepository.findAllByAreas(area);
+      for (InvestorUser investor : matchingAreaInvestors) {
+        InvestorDTO investorDTO = new InvestorDTO();
+        investorDTO.setUserId(investor.getUserId());
+        investorDTO.setName(investor.getName());
+        investorDTO.setInvestorType(investor.getInvestorType());
+        investorDTO.setInvestmentCriteria(investor.getInvestmentCriteria());
+        investorDTO.setRangeMin(investor.getRangeMin());
+        investorDTO.setRangeMax(investor.getRangeMax());
+        if(!sameAreasInvestorsIds.contains(investor.getUserId())){
+          sameAreasInvestorsIds.add(investor.getUserId());
+          sameAreasInvestorsDTO.add(investorDTO);
+        }
+      }
+
+    }
+
+    RecommendedInvestorsDTO frontDataPackage = new RecommendedInvestorsDTO();
+    frontDataPackage.setSameAreas(sameAreasInvestorsDTO);
+    frontDataPackage.setSameLocation(sameLocationInvestorsDTO);
     return new ResponseEntity<>(frontDataPackage, HttpStatus.OK);
   }
 }
