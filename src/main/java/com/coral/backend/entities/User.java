@@ -115,4 +115,10 @@ public class User {
     public byte[] getProfileImage() {
         return profileImage;
     }
+
+    public String getProfileImageString(){return decodeImage(getProfileImage());}
+
+    private String decodeImage(byte[] byteArray) {
+        return new String(byteArray);
+    }
 }

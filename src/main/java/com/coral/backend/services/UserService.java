@@ -118,6 +118,17 @@ public class UserService {
         EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getUserId());
 
         EnterpriseDTO toReturnDTO = getEnterpriseDTO(enterpriseUser);
+        List<InvestorDTO> investors = new ArrayList<>();
+        Optional<List<Investment>> investmentsOptional = investmentRepository.findAllByEnterprise(enterpriseUser);
+
+        if(investmentsOptional.isPresent()){
+            List<Investment> investments = investmentsOptional.get();
+            for(Investment investment: investments){
+                investors.add(investment.getInvestor().toDTO());
+            }
+        }
+
+        toReturnDTO.setInvestors(investors);
 
         return new ResponseEntity<>(toReturnDTO, HttpStatus.OK);
     }
@@ -134,6 +145,7 @@ public class UserService {
         toReturnDTO.setName(enterpriseUser.getName());
         toReturnDTO.setUserId(enterpriseUser.getUserId());
         toReturnDTO.setEnterpriseType(enterpriseUser.getEnterpriseType());
+        toReturnDTO.setMinimumInvestment(enterpriseUser.getMinimumInvestment());
         List<String> areaNames = new ArrayList<>();
         for (Area area : enterpriseUser.getAreas()){
             areaNames.add(area.getName());

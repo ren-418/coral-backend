@@ -126,6 +126,7 @@ public class SearchService {
                 }
                 dataPackage.setAreas(areasString);
                 dataPackage.setProfilePicture(decodeImage(investor.getProfileImage()));
+                dataPackage.setUserId(investor.getUserId());
 
                 FrontDataPackage.add(dataPackage);
             }
@@ -230,6 +231,7 @@ public class SearchService {
                 dataPackage.setMinimumInvestment(enterprise.getMinimumInvestment());
                 dataPackage.setTotalProfitReturn(enterprise.getTotalProfitReturn());
                 dataPackage.setTotalCollected(enterprise.getTotalCollected());
+                dataPackage.setUserId(enterprise.getUserId());
 
                 FrontDataPackage.add(dataPackage);
             }

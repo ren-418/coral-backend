@@ -1,7 +1,10 @@
 package com.coral.backend.entities;
 
+import com.coral.backend.dtos.EnterpriseDTO;
+import com.coral.backend.dtos.InvestorDTO;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -68,5 +71,24 @@ public class InvestorUser extends User {
 
     public String getUserType() {
         return userType;
+    }
+
+    public InvestorDTO toDTO(){
+        InvestorDTO investorDTO = new InvestorDTO();
+        investorDTO.setInvestorType(investorType);
+        investorDTO.setUserId(getUserId());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : getAreas()){
+            areaNames.add(area.getName());
+        }
+        investorDTO.setAreas(areaNames);
+        investorDTO.setDescription(getDescription());
+        investorDTO.setInvestmentCriteria(getInvestmentCriteria());
+        investorDTO.setLocation(getLocation());
+        investorDTO.setName(getName());
+        investorDTO.setProfilePicture(getProfileImageString());
+        investorDTO.setRangeMax(getRangeMax());
+        investorDTO.setRangeMin(getRangeMin());
+        return investorDTO;
     }
 }
