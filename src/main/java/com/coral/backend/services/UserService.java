@@ -154,8 +154,9 @@ public class UserService {
         InvestorUser investor = (InvestorUser) optionalSession.get().getUser();
         EnterpriseUser enterprise = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getEnterpriseId());
 
-        if (enterprise.getEnterpriseType() == "Community") {
+        if (Objects.equals(enterprise.getEnterpriseType(), "Community")) {
             enterprise.setTotalCollected(enterprise.getTotalCollected()+ requestBody.getAmount());
+            enterpriseUserRepository.save(enterprise);
         }
         // If new investment, Create investmentRelationship and add values
         Optional<Investment> optionalInvestment = investmentRepository.findInvestmentByInvestorAndEnterprise(investor, enterprise);
