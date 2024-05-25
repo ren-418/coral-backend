@@ -1,7 +1,5 @@
 package com.coral.backend.controllers;
 
-
-
 import com.coral.backend.dtos.EnterpriseDTO;
 import com.coral.backend.dtos.InvestDTO;
 import com.coral.backend.dtos.InvestorDTO;
@@ -9,7 +7,6 @@ import com.coral.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
 
 @RestController
 @RequestMapping("/api/v1/users")

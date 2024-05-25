@@ -1,7 +1,6 @@
 package com.coral.backend.controllers;
 
 import com.coral.backend.dtos.CheckSessionDTO;
-import com.coral.backend.dtos.SearchDTO;
 import com.coral.backend.services.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,5 +18,10 @@ public class FeedController {
   @PostMapping("/recommended-enterprises")
   public ResponseEntity<Object> getRecommendedEnterprises(@RequestBody CheckSessionDTO checkSessionDTO) {
     return feedService.getRecommendedEnterprises(checkSessionDTO);
+  }
+
+  @PostMapping("/recommended-investors")
+  public ResponseEntity<Object> getRecommendedInvestors(@RequestBody CheckSessionDTO checkSessionDTO) {
+      return feedService.getRecommendedInvestors(checkSessionDTO);
   }
 }

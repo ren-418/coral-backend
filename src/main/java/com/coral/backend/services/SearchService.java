@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.coral.backend.services.UserService.decodeImage;
-
 @Service
 public class SearchService {
 
@@ -114,21 +112,7 @@ public class SearchService {
         for (User user: matchingInvestors){
             if(!user.getFirstLogin()) {
                 InvestorUser investor = (InvestorUser) user;
-                InvestorDTO dataPackage = new InvestorDTO();
-
-                dataPackage.setName(investor.getName());
-                dataPackage.setInvestorType(investor.getInvestorType());
-                dataPackage.setLocation(investor.getLocation());
-                dataPackage.setDescription(investor.getDescription());
-                List<String> areasString = new ArrayList<>();
-                for (Area area : investor.getAreas()) {
-                    areasString.add(area.getName());
-                }
-                dataPackage.setAreas(areasString);
-                dataPackage.setProfilePicture(decodeImage(investor.getProfileImage()));
-                dataPackage.setUserId(investor.getUserId());
-
-                FrontDataPackage.add(dataPackage);
+                FrontDataPackage.add(investor.toDTO());
             }
         }
         return new ResponseEntity<>(FrontDataPackage, HttpStatus.OK);
@@ -215,25 +199,7 @@ public class SearchService {
         for (User user: matchingEnterprises){
             if(!user.getFirstLogin()) {
                 EnterpriseUser enterprise = (EnterpriseUser) user;
-                EnterpriseDTO dataPackage = new EnterpriseDTO();
-
-                dataPackage.setName(enterprise.getName());
-                dataPackage.setEnterpriseType(enterprise.getEnterpriseType());
-                dataPackage.setLocation(enterprise.getLocation());
-                dataPackage.setDescription(enterprise.getDescription());
-                List<String> areasString = new ArrayList<>();
-                for (Area area : enterprise.getAreas()) {
-                    areasString.add(area.getName());
-                }
-                dataPackage.setAreas(areasString);
-                dataPackage.setProfileImage(decodeImage(enterprise.getProfileImage()));
-                dataPackage.setGoal(enterprise.getGoal());
-                dataPackage.setMinimumInvestment(enterprise.getMinimumInvestment());
-                dataPackage.setTotalProfitReturn(enterprise.getTotalProfitReturn());
-                dataPackage.setTotalCollected(enterprise.getTotalCollected());
-                dataPackage.setUserId(enterprise.getUserId());
-
-                FrontDataPackage.add(dataPackage);
+                FrontDataPackage.add(enterprise.toDTO());
             }
         }
         return new ResponseEntity<>(FrontDataPackage, HttpStatus.OK);
