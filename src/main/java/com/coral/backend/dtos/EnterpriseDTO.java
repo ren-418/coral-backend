@@ -20,7 +20,7 @@ public class EnterpriseDTO {
     private int minimumInvestment;
     private int totalProfitReturn;
     private int totalCollected;
-    private List<InvestorUser> investors;
+    private List<InvestorDTO> investors;
 
     //Setters
 
@@ -35,6 +35,10 @@ public class EnterpriseDTO {
     }
     public void setUserId(long user_id) {
         this.userId = user_id;
+    }
+
+    public void setInvestors(List<InvestorDTO> investors){
+        this.investors = investors;
     }
 
     public void setName(String name) {
@@ -134,5 +138,9 @@ public class EnterpriseDTO {
     }
     public String getProfileImage(){
         return profileImage;
+    }
+
+    public List<InvestorDTO> getInvestors(){
+        return this.investors;
     }
 }
