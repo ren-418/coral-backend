@@ -67,6 +67,7 @@ public class AuthService {
                 EnterpriseUser enterpriseUser = new EnterpriseUser();
                 enterpriseUser.setEmail(user.getEmail());
                 enterpriseUser.setPassword(user.getPassword());
+                enterpriseUser.setTotalCollected(0);
                 enterpriseUser.setFirstLogin(true);
                 userRepository.save(enterpriseUser);
                 response =  "Your account was created successfully";
@@ -153,6 +154,7 @@ public class AuthService {
             enterpriseDTO.setName(enterprise.getName());
             enterpriseDTO.setDescription(enterprise.getDescription());
             enterpriseDTO.setLocation(enterprise.getLocation());
+            enterpriseDTO.setTotalCollected(enterprise.getTotalCollected());
             if(enterprise.getProfileImage() != null){
                 enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
             }

@@ -98,9 +98,11 @@ public class SearchService {
             //Copy matchingInvestors to a new list to avoid ConcurrentModificationException
             List<User> matchingInvestorsCopy = new ArrayList<>(matchingInvestors);
             for (User user: matchingInvestorsCopy){
-                boolean containsSubString = user.getName().toLowerCase().contains(searchDTO.getUserName().toLowerCase());
-                if (!containsSubString){
-                    matchingInvestors.remove(user);
+                if(!user.getFirstLogin()) {
+                    boolean containsSubString = user.getName().toLowerCase().contains(searchDTO.getUserName().toLowerCase());
+                    if (!containsSubString) {
+                        matchingInvestors.remove(user);
+                    }
                 }
             }
         }
@@ -124,6 +126,7 @@ public class SearchService {
                 }
                 dataPackage.setAreas(areasString);
                 dataPackage.setProfilePicture(decodeImage(investor.getProfileImage()));
+                dataPackage.setUserId(investor.getUserId());
 
                 FrontDataPackage.add(dataPackage);
             }
@@ -133,7 +136,7 @@ public class SearchService {
 
     public ResponseEntity<Object> searchEnterprises(SearchDTO searchDTO) {
         List<Area> areas = new ArrayList<>();
-        Set<User> matchingInvestors = new HashSet<>();
+        Set<User> matchingEnterprises = new HashSet<>();
 
         //Transform List<String> to List<Area>
         if (searchDTO.getAreas() != null){
@@ -147,67 +150,69 @@ public class SearchService {
         }
 
         if (searchDTO.getAreas().isEmpty() && searchDTO.getLocations().isEmpty() && !Objects.equals(searchDTO.getEnterpriseType(), "")){
-            matchingInvestors.addAll(enterpriseUserRepository.findAllByEnterpriseType(searchDTO.getEnterpriseType()));
+            matchingEnterprises.addAll(enterpriseUserRepository.findAllByEnterpriseType(searchDTO.getEnterpriseType()));
         }
         else if(searchDTO.getAreas().isEmpty() && !searchDTO.getLocations().isEmpty() && !Objects.equals(searchDTO.getEnterpriseType(), "")){
             for (String location : searchDTO.getLocations()){
-                matchingInvestors.addAll(enterpriseUserRepository.findAllByEnterpriseTypeAndLocation(searchDTO.getEnterpriseType(), location));
+                matchingEnterprises.addAll(enterpriseUserRepository.findAllByEnterpriseTypeAndLocation(searchDTO.getEnterpriseType(), location));
             }
         } else if (!searchDTO.getAreas().isEmpty() && searchDTO.getLocations().isEmpty() && !Objects.equals(searchDTO.getEnterpriseType(), "")){
             for (Area area : areas){
-                matchingInvestors.addAll(enterpriseUserRepository.findAllByEnterpriseTypeAndAreas(searchDTO.getEnterpriseType(), area));
+                matchingEnterprises.addAll(enterpriseUserRepository.findAllByEnterpriseTypeAndAreas(searchDTO.getEnterpriseType(), area));
             }
         } else if(!searchDTO.getAreas().isEmpty() && !searchDTO.getLocations().isEmpty() && !Objects.equals(searchDTO.getEnterpriseType(), "")){
             for (Area area : areas){
                 for (String location : searchDTO.getLocations()){
-                    matchingInvestors.addAll(enterpriseUserRepository.findAllByEnterpriseTypeAndAreasAndLocation(searchDTO.getEnterpriseType(), area, location));
+                    matchingEnterprises.addAll(enterpriseUserRepository.findAllByEnterpriseTypeAndAreasAndLocation(searchDTO.getEnterpriseType(), area, location));
                 }
             }
         } else if(searchDTO.getAreas().isEmpty() && !searchDTO.getLocations().isEmpty() && Objects.equals(searchDTO.getEnterpriseType(), "")){
             for (String location : searchDTO.getLocations()){
-                matchingInvestors.addAll(enterpriseUserRepository.findAllByLocation(location));
+                matchingEnterprises.addAll(enterpriseUserRepository.findAllByLocation(location));
             }
         } else if (!searchDTO.getAreas().isEmpty() && searchDTO.getLocations().isEmpty() && Objects.equals(searchDTO.getEnterpriseType(), "")){
             for (Area area : areas){
-                matchingInvestors.addAll(enterpriseUserRepository.findAllByAreas(area));
+                matchingEnterprises.addAll(enterpriseUserRepository.findAllByAreas(area));
             }
         } else if(!searchDTO.getAreas().isEmpty() && !searchDTO.getLocations().isEmpty() && Objects.equals(searchDTO.getEnterpriseType(), "")){
             for (Area area : areas){
                 for (String location : searchDTO.getLocations()){
-                    matchingInvestors.addAll(enterpriseUserRepository.findAllByAreasAndLocation(area, location));
+                    matchingEnterprises.addAll(enterpriseUserRepository.findAllByAreasAndLocation(area, location));
                 }
             }
         }
 
-        if(!Objects.equals(searchDTO.getUserName(), "") && !matchingInvestors.isEmpty()){
+        if(!Objects.equals(searchDTO.getUserName(), "") && !matchingEnterprises.isEmpty()){
             //Copy matchingInvestors to a new list to avoid ConcurrentModificationException
-            List<User> matchingInvestorsCopy = new ArrayList<>(matchingInvestors);
+            List<User> matchingInvestorsCopy = new ArrayList<>(matchingEnterprises);
             for (User user: matchingInvestorsCopy){
-                if(user.getName() != null){
+                if(!user.getFirstLogin()){
                     boolean containsSubString = user.getName().toLowerCase().contains(searchDTO.getUserName().toLowerCase());
                     if (!containsSubString){
-                        matchingInvestors.remove(user);
+                        matchingEnterprises.remove(user);
                     }
                 }
             }
         }
-        else if(!Objects.equals(searchDTO.getUserName(), "") && matchingInvestors.isEmpty()){
-            matchingInvestors.addAll(investorUserRepository.findAll());
+        else if(!Objects.equals(searchDTO.getUserName(), "") && matchingEnterprises.isEmpty()){
+            matchingEnterprises.addAll(enterpriseUserRepository.findAll());
             //Copy matchingInvestors to a new list to avoid ConcurrentModificationException
-            List<User> matchingInvestorsCopy = new ArrayList<>(matchingInvestors);
-            for (User user: matchingInvestorsCopy){
-                boolean containsSubString = user.getName().toLowerCase().contains(searchDTO.getUserName().toLowerCase());
-                if (!containsSubString){
-                    matchingInvestors.remove(user);
+            List<User> matchingEnterprisesCopy = new ArrayList<>(matchingEnterprises);
+            for (User user: matchingEnterprisesCopy){
+                if(!user.getFirstLogin()) {
+                    boolean containsSubString = user.getName().toLowerCase().contains(searchDTO.getUserName().toLowerCase());
+                    if (!containsSubString) {
+                        matchingEnterprises.remove(user);
+                    }
                 }
             }
         }
 
         List<EnterpriseDTO> FrontDataPackage = new ArrayList<>();
-        if (matchingInvestors.isEmpty()){
+        if (matchingEnterprises.isEmpty()){
             return new ResponseEntity<>("No matching enterprises found", HttpStatus.NOT_FOUND);
         }
-        for (User user: matchingInvestors){
+        for (User user: matchingEnterprises){
             if(!user.getFirstLogin()) {
                 EnterpriseUser enterprise = (EnterpriseUser) user;
                 EnterpriseDTO dataPackage = new EnterpriseDTO();
@@ -225,6 +230,8 @@ public class SearchService {
                 dataPackage.setGoal(enterprise.getGoal());
                 dataPackage.setMinimumInvestment(enterprise.getMinimumInvestment());
                 dataPackage.setTotalProfitReturn(enterprise.getTotalProfitReturn());
+                dataPackage.setTotalCollected(enterprise.getTotalCollected());
+                dataPackage.setUserId(enterprise.getUserId());
 
                 FrontDataPackage.add(dataPackage);
             }

@@ -1,5 +1,7 @@
 package com.coral.backend.dtos;
 
+import com.coral.backend.entities.InvestorUser;
+
 import java.util.List;
 
 public class EnterpriseDTO {
@@ -14,11 +16,17 @@ public class EnterpriseDTO {
     private List<String> areas;
     private String sessionToken;
     String enterpriseType;
-    int goal;
-    int minimumInvestment;
-    int totalProfitReturn;
+    private int goal;
+    private int minimumInvestment;
+    private int totalProfitReturn;
+    private int totalCollected;
+    private List<InvestorDTO> investors;
 
     //Setters
+
+    public void setTotalCollected(int totalCollected) {
+        this.totalCollected = totalCollected;
+    }
     public void setSessionToken(String sessionToken){
         this.sessionToken=sessionToken;
     }
@@ -27,6 +35,10 @@ public class EnterpriseDTO {
     }
     public void setUserId(long user_id) {
         this.userId = user_id;
+    }
+
+    public void setInvestors(List<InvestorDTO> investors){
+        this.investors = investors;
     }
 
     public void setName(String name) {
@@ -76,6 +88,9 @@ public class EnterpriseDTO {
 
 
     //Getters
+    public int getTotalCollected() {
+        return totalCollected;
+    }
     public int getMinimumInvestment() {
         return minimumInvestment;
     }
@@ -125,4 +140,7 @@ public class EnterpriseDTO {
         return profileImage;
     }
 
+    public List<InvestorDTO> getInvestors(){
+        return this.investors;
+    }
 }

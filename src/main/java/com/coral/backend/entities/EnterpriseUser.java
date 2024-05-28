@@ -2,18 +2,32 @@ package com.coral.backend.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 public class EnterpriseUser extends User {
-    String enterpriseType;
-    int goal;
-    int minimumInvestment;
-    int totalProfitReturn;
+    private String enterpriseType;
+    private int goal;
+    private int minimumInvestment;
+    private int totalProfitReturn;
+    private int totalCollected;
+    @ManyToMany(mappedBy = "enterprises")
+    private List<InvestorUser> investors;
 
     @Column(insertable=false, updatable=false)
     private String userType = "enterprise";
 
     // Setters
+    public void setInvestors(List<InvestorUser> investors) {
+        this.investors = investors;
+    }
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+    public void setTotalCollected(int totalCollected) {
+        this.totalCollected = totalCollected;
+    }
     public void setGoal(int goal) {
         this.goal = goal;
     }
@@ -28,6 +42,12 @@ public class EnterpriseUser extends User {
     }
 
     // Getters
+    public List<InvestorUser> getInvestors() {
+        return investors;
+    }
+    public int getTotalCollected() {
+        return totalCollected;
+    }
     public String getEnterpriseType() {
         return enterpriseType;
     }
