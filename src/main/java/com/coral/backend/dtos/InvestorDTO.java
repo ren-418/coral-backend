@@ -21,9 +21,12 @@ public class InvestorDTO {
     private List<String> areas;
     private String userType;
     private String sessionToken;
-    private List<EnterpriseUser> enterprises;
+    private List<EnterpriseDTO> enterprises;
 
     //Setters
+    public void setEnterprises(List<EnterpriseDTO> enterprises) {
+        this.enterprises = enterprises;
+    }
     public void setProfilePicture(String base64) {
         this.profilePicture = base64;
     }
@@ -133,5 +136,9 @@ public class InvestorDTO {
 
     public String getSessionToken() {
         return sessionToken;
+    }
+
+    public List<EnterpriseDTO> getEnterprises() {
+        return enterprises;
     }
 }
