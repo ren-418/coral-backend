@@ -15,6 +15,9 @@ public class EnterpriseUser extends User {
     private int minimumInvestment;
     private int totalProfitReturn;
     private int totalCollected;
+    @Column(insertable = false, updatable = false)
+    private String userType = "enterprise";
+
     @ManyToMany(mappedBy = "enterprises")
     private List<InvestorUser> investors;
 
@@ -22,6 +25,10 @@ public class EnterpriseUser extends User {
     private List<InvestorUser> chatsWithInvestors;
 
     // Setters
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
     public void setInvestors(List<InvestorUser> investors) {
         this.investors = investors;
     }
@@ -42,6 +49,11 @@ public class EnterpriseUser extends User {
     }
 
     // Getters
+
+    public String getUserType() {
+        return userType;
+    }
+
     public List<InvestorUser> getInvestors() {
         return investors;
     }
