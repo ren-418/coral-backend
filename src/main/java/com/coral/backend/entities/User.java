@@ -130,7 +130,7 @@ public class User {
     public String getUserType() {
         return userType;
     }
-      
+  
     private String decodeImage(byte[] byteArray) {
         return new String(byteArray);
     }

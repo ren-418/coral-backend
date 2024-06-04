@@ -49,4 +49,8 @@ public class ChatRoom {
   public void setMessages(List<ChatMessage> messages) {
     this.messages = messages;
   }
+
+  public ChatMessage getLastMessage() {
+    return messages.getLast();
+  }
 }

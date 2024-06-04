@@ -6,8 +6,11 @@ import com.coral.backend.entities.Investment;
 import com.coral.backend.entities.InvestorUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
   Optional<ChatRoom> findChatRoomByInvestorAndEnterprise(InvestorUser investor, EnterpriseUser enterprise);
+  List<ChatRoom> findAllByInvestor(InvestorUser investorUser);
+  List<ChatRoom> findAllByEnterprise(EnterpriseUser enterpriseUser);
 }
