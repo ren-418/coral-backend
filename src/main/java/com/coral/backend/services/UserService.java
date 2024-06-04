@@ -87,10 +87,10 @@ public class UserService {
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
         user.setLocation(requestBody.getLocation());
-        System.out.println(requestBody.getEnterpriseType());
         if (Objects.equals(requestBody.getEnterpriseType(), "Community")){
             user.setEnterpriseType("Community");
             user.setGoal(requestBody.getGoal());
+            user.setTotalCollected(0);
             user.setMinimumInvestment(requestBody.getMinimumInvestment());
             user.setTotalProfitReturn(requestBody.getTotalProfitReturn());
         } else {

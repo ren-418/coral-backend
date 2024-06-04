@@ -116,6 +116,12 @@ public class User {
         return profileImage;
     }
 
+    public String getProfileImageString(){
+        if(profileImage != null){
+            return new String(profileImage);
+        }
+        return null;
+    }
 
     public void setUserType(String userType) {
         this.userType = userType;
@@ -123,9 +129,8 @@ public class User {
 
     public String getUserType() {
         return userType;
-
-    public String getProfileImageString(){return decodeImage(getProfileImage());}
-
+    }
+      
     private String decodeImage(byte[] byteArray) {
         return new String(byteArray);
     }
