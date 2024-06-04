@@ -116,9 +116,10 @@ public class User {
         return profileImage;
     }
 
-    public String getProfileImageString(){return decodeImage(getProfileImage());}
-
-    private String decodeImage(byte[] byteArray) {
-        return new String(byteArray);
+    public String getProfileImageString(){
+        if(profileImage != null){
+            return new String(profileImage);
+        }
+        return null;
     }
 }

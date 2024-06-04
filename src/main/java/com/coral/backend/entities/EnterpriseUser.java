@@ -89,9 +89,32 @@ public class EnterpriseUser extends User {
         enterpriseDTO.setDescription(getDescription());
         List<InvestorDTO> investorsDTO = new ArrayList<>();
         for (InvestorUser investor : getInvestors()){
-            investorsDTO.add(investor.toDTO());
+            investorsDTO.add(investor.toDTOWithoutEnterprises());
         }
         enterpriseDTO.setInvestors(investorsDTO);
+        return enterpriseDTO;
+    }
+
+    public EnterpriseDTO toDTOWithoutInvestors() {
+        EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+        enterpriseDTO.setEnterpriseType(getEnterpriseType());
+        enterpriseDTO.setGoal(getGoal());
+        enterpriseDTO.setMinimumInvestment(getMinimumInvestment());
+        enterpriseDTO.setTotalProfitReturn(getTotalProfitReturn());
+        enterpriseDTO.setTotalCollected(getTotalCollected());
+        enterpriseDTO.setUserId(getUserId());
+        enterpriseDTO.setName(getName());
+        enterpriseDTO.setProfileImage(getProfileImageString());
+        enterpriseDTO.setUserId(getUserId());
+        enterpriseDTO.setLocation(getLocation());
+        enterpriseDTO.setFirstLogin(getFirstLogin());
+        enterpriseDTO.setUserType(getUserType());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : getAreas()){
+            areaNames.add(area.getName());
+        }
+        enterpriseDTO.setAreas(areaNames);
+        enterpriseDTO.setDescription(getDescription());
         return enterpriseDTO;
     }
 }
