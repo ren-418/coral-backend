@@ -18,15 +18,12 @@ public class EnterpriseUser extends User {
     @ManyToMany(mappedBy = "enterprises")
     private List<InvestorUser> investors;
 
-    @Column(insertable=false, updatable=false)
-    private String userType = "enterprise";
+    @ManyToMany(mappedBy = "chatsWithEnterprises")
+    private List<InvestorUser> chatsWithInvestors;
 
     // Setters
     public void setInvestors(List<InvestorUser> investors) {
         this.investors = investors;
-    }
-    public void setUserType(String userType) {
-        this.userType = userType;
     }
     public void setTotalCollected(int totalCollected) {
         this.totalCollected = totalCollected;
@@ -63,6 +60,7 @@ public class EnterpriseUser extends User {
     public int getMinimumInvestment() {
         return minimumInvestment;
     }
+
     public String getUserType() {
         return userType;
     }
@@ -94,4 +92,5 @@ public class EnterpriseUser extends User {
         enterpriseDTO.setInvestors(investorsDTO);
         return enterpriseDTO;
     }
+
 }
