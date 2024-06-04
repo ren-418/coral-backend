@@ -1,15 +1,14 @@
 package com.coral.backend.entities;
 
 import jakarta.persistence.*;
-import org.apache.logging.log4j.message.Message;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //TABLE_PER_CLASS o JOINED
+@DiscriminatorColumn(name = "userType")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +29,7 @@ public class User {
     private String description;
     private String location;
     private LocalDate initial_date;
-    private String userType;
+    private String userTypeMin;
 
     public User(){}
 
@@ -123,12 +122,12 @@ public class User {
         return null;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setUserTypeMin(String userType) {
+        this.userTypeMin = userType;
     }
 
-    public String getUserType() {
-        return userType;
+    public String getUserTypeMin() {
+        return userTypeMin;
     }
   
     private String decodeImage(byte[] byteArray) {

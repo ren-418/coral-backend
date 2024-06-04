@@ -14,6 +14,8 @@ public class InvestorUser extends User {
     private String investmentCriteria;
     private int rangeMin;
     private int rangeMax;
+    @Column(insertable = false, updatable = false)
+    private String userType = "investor";
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
         name = "investments",
@@ -30,6 +32,11 @@ public class InvestorUser extends User {
     private List<EnterpriseUser> chatsWithEnterprises;
 
     //Setters
+
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     public void setEnterprises(List<EnterpriseUser> enterprises) {
         this.enterprises = enterprises;
@@ -51,6 +58,11 @@ public class InvestorUser extends User {
     }
 
     //Getters
+
+    public String getUserType() {
+        return userType;
+    }
+
     public List<EnterpriseUser> getEnterprises() {
         return enterprises;
     }

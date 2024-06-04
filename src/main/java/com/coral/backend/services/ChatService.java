@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class ChatService {
     InvestorUser investorUser;
     EnterpriseUser enterpriseUser;
 
-    switch (sender.getUserType()) {
+    switch (sender.getUserTypeMin()) {
       case "investor" -> {
         investorUser = investorUserRepository.findInvestorUserByUserId(sender.getUserId());
         enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getReceiverId());
@@ -112,7 +111,7 @@ public class ChatService {
     InvestorUser investorUser;
     EnterpriseUser enterpriseUser;
 
-    switch (sender.getUserType()) {
+    switch (sender.getUserTypeMin()) {
       case "investor" -> {
         investorUser = investorUserRepository.findInvestorUserByUserId(sender.getUserId());
         enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getReceiverId());
@@ -147,7 +146,7 @@ public class ChatService {
 
     List<ChatRoom> allChatRooms;
     List<ChatPreviewDTO> chatPreviews = new ArrayList<>();
-    switch (sender.getUserType()) {
+    switch (sender.getUserTypeMin()) {
       case "investor" -> {
         allChatRooms = chatRoomRepository.findAllByInvestor(investorUserRepository.findInvestorUserByUserId(sender.getUserId()));
         for (ChatRoom chatRoom : allChatRooms) {
