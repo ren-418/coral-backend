@@ -7,9 +7,6 @@ import java.util.List;
 @Entity
 public class InvestorUser extends User {
 
-    @Column(insertable=false, updatable=false)
-    private String userType = "investor";
-
     private int investorType;
     private String investmentCriteria;
     private int rangeMin;
@@ -21,14 +18,18 @@ public class InvestorUser extends User {
         inverseJoinColumns = @JoinColumn(name = "enterprise_id")
     )
     private List<EnterpriseUser> enterprises;
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+        name = "chat_rooms",
+        joinColumns = @JoinColumn(name = "investor_id"),
+        inverseJoinColumns = @JoinColumn(name = "enterprise_id")
+    )
+    private List<EnterpriseUser> chatsWithEnterprises;
 
     //Setters
 
     public void setEnterprises(List<EnterpriseUser> enterprises) {
         this.enterprises = enterprises;
-    }
-    public void setUserType(String userType) {
-        this.userType = userType;
     }
     public void setInvestorType(int investor_type) {
         this.investorType = investor_type;
@@ -64,9 +65,5 @@ public class InvestorUser extends User {
 
     public int getRangeMax() {
         return rangeMax;
-    }
-
-    public String getUserType() {
-        return userType;
     }
 }

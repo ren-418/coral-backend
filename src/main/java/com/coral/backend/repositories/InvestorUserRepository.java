@@ -1,6 +1,7 @@
 package com.coral.backend.repositories;
 
 import com.coral.backend.entities.Area;
+import com.coral.backend.entities.EnterpriseUser;
 import com.coral.backend.entities.InvestorUser;
 import com.coral.backend.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,5 @@ public interface InvestorUserRepository extends JpaRepository<InvestorUser, Stri
     List<User> findAllByAreas(Area area);
 
     List<User> findAllByLocation(String location);
-
-    List<InvestorUser> findAll();
+    InvestorUser findInvestorUserByUserId(long userId);
 }
