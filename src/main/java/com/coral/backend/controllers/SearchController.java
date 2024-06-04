@@ -1,6 +1,5 @@
 package com.coral.backend.controllers;
 
-import com.coral.backend.dtos.RegisterDTO;
 import com.coral.backend.dtos.SearchDTO;
 import com.coral.backend.services.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
