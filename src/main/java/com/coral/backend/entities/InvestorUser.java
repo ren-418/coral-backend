@@ -90,9 +90,31 @@ public class InvestorUser extends User {
         investorDTO.setUserType(getUserType());
         List<EnterpriseDTO> enterprisesDTO = new ArrayList<>();
         for (EnterpriseUser enterprise : getEnterprises()){
-            enterprisesDTO.add(enterprise.toDTO());
+            enterprisesDTO.add(enterprise.toDTOWithoutInvestors());
         }
         investorDTO.setEnterprises(enterprisesDTO);
+        return investorDTO;
+    }
+
+    public InvestorDTO toDTOWithoutEnterprises(){
+        InvestorDTO investorDTO = new InvestorDTO();
+        investorDTO.setInvestorType(getInvestorType());
+        investorDTO.setUserId(getUserId());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : getAreas()){
+            areaNames.add(area.getName());
+        }
+        investorDTO.setAreas(areaNames);
+        investorDTO.setDescription(getDescription());
+        investorDTO.setInvestmentCriteria(getInvestmentCriteria());
+        investorDTO.setLocation(getLocation());
+        investorDTO.setName(getName());
+        investorDTO.setProfilePicture(getProfileImageString());
+        investorDTO.setRangeMax(getRangeMax());
+        investorDTO.setRangeMin(getRangeMin());
+        investorDTO.setFirstLogin(getFirstLogin());
+        investorDTO.setUserType(getUserType());
+
         return investorDTO;
     }
 }

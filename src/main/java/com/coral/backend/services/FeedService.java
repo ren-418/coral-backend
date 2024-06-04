@@ -55,7 +55,7 @@ public class FeedService {
   }
 
   public ResponseEntity<Object> getRecommendedInvestors(CheckSessionDTO sessionDTO) {
-    InvestorUser user = (InvestorUser) authService.checkAuth(sessionDTO.getSessionToken());
+    EnterpriseUser user = (EnterpriseUser) authService.checkAuth(sessionDTO.getSessionToken());
     List<Area> userAreas = user.getAreas();
     String location = user.getLocation();
     List<InvestorDTO> sameAreasInvestorsDTO = new ArrayList<>();
