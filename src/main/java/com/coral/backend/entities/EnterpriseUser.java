@@ -1,7 +1,10 @@
 package com.coral.backend.entities;
 
+import com.coral.backend.dtos.EnterpriseDTO;
+import com.coral.backend.dtos.InvestorDTO;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,4 +60,37 @@ public class EnterpriseUser extends User {
     public int getMinimumInvestment() {
         return minimumInvestment;
     }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public EnterpriseDTO toDTO(){
+        EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+        enterpriseDTO.setEnterpriseType(getEnterpriseType());
+        enterpriseDTO.setGoal(getGoal());
+        enterpriseDTO.setMinimumInvestment(getMinimumInvestment());
+        enterpriseDTO.setTotalProfitReturn(getTotalProfitReturn());
+        enterpriseDTO.setTotalCollected(getTotalCollected());
+        enterpriseDTO.setUserId(getUserId());
+        enterpriseDTO.setName(getName());
+        enterpriseDTO.setProfileImage(getProfileImageString());
+        enterpriseDTO.setUserId(getUserId());
+        enterpriseDTO.setLocation(getLocation());
+        enterpriseDTO.setFirstLogin(getFirstLogin());
+        enterpriseDTO.setUserType(getUserType());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : getAreas()){
+            areaNames.add(area.getName());
+        }
+        enterpriseDTO.setAreas(areaNames);
+        enterpriseDTO.setDescription(getDescription());
+        List<InvestorDTO> investorsDTO = new ArrayList<>();
+        for (InvestorUser investor : getInvestors()){
+            investorsDTO.add(investor.toDTO());
+        }
+        enterpriseDTO.setInvestors(investorsDTO);
+        return enterpriseDTO;
+    }
+
 }

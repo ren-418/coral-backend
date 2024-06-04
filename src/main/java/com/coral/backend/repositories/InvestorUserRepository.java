@@ -19,8 +19,11 @@ public interface InvestorUserRepository extends JpaRepository<InvestorUser, Stri
 
     List<User> findAllByAreasAndLocation(Area area, String location);
 
-    List<User> findAllByAreas(Area area);
+    List<InvestorUser> findAllByAreas(Area area);
 
-    List<User> findAllByLocation(String location);
     InvestorUser findInvestorUserByUserId(long userId);
+
+    List<InvestorUser> findAllByLocation(String location);
+
+    List<InvestorUser> findAll();
 }

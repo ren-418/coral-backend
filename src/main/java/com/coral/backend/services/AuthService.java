@@ -9,23 +9,16 @@ import com.coral.backend.repositories.ResetTokenRepository;
 
 import com.coral.backend.repositories.SessionRepository;
 import com.coral.backend.repositories.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.coral.backend.services.UserService.decodeImage;
 
 @Service
 public class AuthService {
@@ -101,11 +94,7 @@ public class AuthService {
                 session = optionalSession.get();
             }
 
-            if (user instanceof InvestorUser) {
-                InvestorUser investor = (InvestorUser) user;
-                return new ResponseEntity<>(session.getSessionToken(), HttpStatus.OK);
-            } else if (user instanceof EnterpriseUser) {
-                EnterpriseUser enterprise = (EnterpriseUser) user;
+            if (user instanceof InvestorUser || user instanceof EnterpriseUser) {
                 return new ResponseEntity<>(session.getSessionToken(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
@@ -125,49 +114,9 @@ public class AuthService {
         User user = optionalSession.get().getUser();
 
         if (user instanceof InvestorUser) {
-            InvestorUser investor = (InvestorUser) user;
-            InvestorDTO investorDTO = new InvestorDTO();
-            investorDTO.setEmail(investor.getEmail());
-            investorDTO.setFirstLogin(investor.getFirstLogin());
-            investorDTO.setUserId(investor.getUserId());
-            investorDTO.setName(investor.getName());
-            investorDTO.setDescription(investor.getDescription());
-            investorDTO.setLocation(investor.getLocation());
-            investorDTO.setInvestorType(investor.getInvestorType());
-            investorDTO.setRangeMax(investor.getRangeMax());
-            investorDTO.setRangeMin(investor.getRangeMin());
-            investorDTO.setInvestmentCriteria(investor.getInvestmentCriteria());
-            if(investor.getProfileImage() != null){
-                investorDTO.setProfilePicture(decodeImage(investor.getProfileImage()));
-            }
-            List<String> areaNames = new ArrayList<>();
-            for (Area area : investor.getAreas()){
-                areaNames.add(area.getName());
-            }
-            investorDTO.setUserType(investor.getUserType());
-            investorDTO.setAreas(areaNames);
-            return new ResponseEntity<>(investorDTO, HttpStatus.OK);
+            return new ResponseEntity<>(((InvestorUser) user).toDTO(), HttpStatus.OK);
         } else if (user instanceof EnterpriseUser) {
-            EnterpriseUser enterprise = (EnterpriseUser) user;
-            EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
-            enterpriseDTO.setEmail(enterprise.getEmail());
-            enterpriseDTO.setFirstLogin(enterprise.getFirstLogin());
-            enterpriseDTO.setUserId(enterprise.getUserId());
-            enterpriseDTO.setName(enterprise.getName());
-            enterpriseDTO.setDescription(enterprise.getDescription());
-            enterpriseDTO.setLocation(enterprise.getLocation());
-            enterpriseDTO.setTotalCollected(enterprise.getTotalCollected());
-            if(enterprise.getProfileImage() != null){
-                enterpriseDTO.setProfileImage(decodeImage(enterprise.getProfileImage()));
-            }
-
-            List<String> areaNames = new ArrayList<>();
-            for (Area area : enterprise.getAreas()){
-                areaNames.add(area.getName());
-            }
-            enterpriseDTO.setAreas(areaNames);
-            enterpriseDTO.setUserType(enterprise.getUserType());
-            return new ResponseEntity<>(enterpriseDTO, HttpStatus.OK);
+            return new ResponseEntity<>(((EnterpriseUser) user).toDTO(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid user type", HttpStatus.NOT_FOUND);
         }

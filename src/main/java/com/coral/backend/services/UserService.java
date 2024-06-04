@@ -48,10 +48,13 @@ public class UserService {
 
         List<Area> areaList = new ArrayList<>();
         for (String area : requestBody.getAreas()) {
-            areaList.add(areaRepository.findAreaByName(area).get());
+            Optional<Area> newArea = areaRepository.findAreaByName(area);
+            if(newArea.isPresent()){
+                areaList.add(newArea.get());
+            }
         }
         user.setAreas(areaList);
-        user.setInitialDate(getDate());
+        user.setInitialDate(getActualDate());
         user.setProfileImage(encodeImage(requestBody.getProfilePicture()));
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
@@ -73,10 +76,13 @@ public class UserService {
         }
         List<Area> areaList = new ArrayList<>();
         for (String area : requestBody.getAreas()) {
-            areaList.add(areaRepository.findAreaByName(area).get());
+            Optional<Area> newArea = areaRepository.findAreaByName(area);
+            if(newArea.isPresent()){
+                areaList.add(newArea.get());
+            }
         }
         user.setAreas(areaList);
-        user.setInitialDate(getDate());
+        user.setInitialDate(getActualDate());
         user.setProfileImage(encodeImage(requestBody.getProfileImage()));
         user.setName(requestBody.getName());
         user.setDescription(requestBody.getDescription());
@@ -100,11 +106,7 @@ public class UserService {
         return java.util.Base64.getDecoder().decode(encodedString);
     }
 
-    public static String decodeImage(byte[] byteArray) {
-        return new String(byteArray);
-    }
-
-    public LocalDate getDate(){
+    public LocalDate getActualDate(){
         return LocalDate.now();
     }
 
@@ -117,28 +119,20 @@ public class UserService {
 
         EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getUserId());
 
-        EnterpriseDTO toReturnDTO = getEnterpriseDTO(enterpriseUser);
+        EnterpriseDTO toReturnDTO = enterpriseUser.toDTO();
+        List<InvestorDTO> investors = new ArrayList<>();
+        Optional<List<Investment>> investmentsOptional = investmentRepository.findAllByEnterprise(enterpriseUser);
+
+        if(investmentsOptional.isPresent()){
+            List<Investment> investments = investmentsOptional.get();
+            for(Investment investment: investments){
+                investors.add(investment.getInvestor().toDTO());
+            }
+        }
+
+        toReturnDTO.setInvestors(investors);
 
         return new ResponseEntity<>(toReturnDTO, HttpStatus.OK);
-    }
-
-    private static EnterpriseDTO getEnterpriseDTO(EnterpriseUser enterpriseUser) {
-        EnterpriseDTO toReturnDTO = new EnterpriseDTO();
-
-        toReturnDTO.setProfileImage(decodeImage(enterpriseUser.getProfileImage()));
-        toReturnDTO.setLocation(enterpriseUser.getLocation());
-        toReturnDTO.setTotalCollected(enterpriseUser.getTotalCollected());
-        toReturnDTO.setGoal(enterpriseUser.getGoal());
-        toReturnDTO.setName(enterpriseUser.getName());
-        toReturnDTO.setUserId(enterpriseUser.getUserId());
-        toReturnDTO.setEnterpriseType(enterpriseUser.getEnterpriseType());
-        List<String> areaNames = new ArrayList<>();
-        for (Area area : enterpriseUser.getAreas()){
-            areaNames.add(area.getName());
-        }
-        toReturnDTO.setAreas(areaNames);
-        toReturnDTO.setDescription(enterpriseUser.getDescription());
-        return toReturnDTO;
     }
 
     public ResponseEntity<Object> investInEnterprise(InvestDTO requestBody) {
@@ -151,8 +145,9 @@ public class UserService {
         InvestorUser investor = (InvestorUser) optionalSession.get().getUser();
         EnterpriseUser enterprise = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getEnterpriseId());
 
-        if (enterprise.getEnterpriseType() == "Community") {
+        if (Objects.equals(enterprise.getEnterpriseType(), "Community")) {
             enterprise.setTotalCollected(enterprise.getTotalCollected()+ requestBody.getAmount());
+            enterpriseUserRepository.save(enterprise);
         }
         // If new investment, Create investmentRelationship and add values
         Optional<Investment> optionalInvestment = investmentRepository.findInvestmentByInvestorAndEnterprise(investor, enterprise);

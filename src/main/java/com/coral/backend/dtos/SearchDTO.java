@@ -8,6 +8,7 @@ public class SearchDTO {
     private Integer investorType;
     private String userName;
     private String enterpriseType;
+    private long userId;
 
 
     //Setters
