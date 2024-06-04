@@ -70,10 +70,6 @@ public class InvestorUser extends User {
         return rangeMax;
     }
 
-    public String getUserType() {
-        return userType;
-    }
-
     public InvestorDTO toDTO(){
         InvestorDTO investorDTO = new InvestorDTO();
         investorDTO.setInvestorType(getInvestorType());

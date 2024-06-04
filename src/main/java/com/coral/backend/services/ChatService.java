@@ -127,10 +127,9 @@ public class ChatService {
     Optional<ChatRoom> chatRoom = getChatRoom(investorUser, enterpriseUser);
 
     ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
-
-    EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
-
-    InvestorDTO investorDTO = new InvestorDTO();
+    chatRoomDTO.setMessages(chatRoom.get().getMessages());
+    chatRoomDTO.setEnterpriseDTO(enterpriseUser.toDTO());
+    chatRoomDTO.setInvestorDTO(investorUser.toDTO());
 
     return new ResponseEntity<>(chatRoomDTO, HttpStatus.OK);
   }
@@ -140,7 +139,39 @@ public class ChatService {
   }
 
   public ResponseEntity<Object> getChats(CheckSessionDTO requestBody) {
-    return null;
-    //TODO
+    Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+    if (optionalSession.isEmpty()) {
+      return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
+    }
+    User sender = optionalSession.get().getUser();
+
+    List<ChatRoom> allChatRooms;
+    List<ChatPreviewDTO> chatPreviews = new ArrayList<>();
+    switch (sender.getUserType()) {
+      case "investor" -> {
+        allChatRooms = chatRoomRepository.findAllByInvestor(investorUserRepository.findInvestorUserByUserId(sender.getUserId()));
+        for (ChatRoom chatRoom : allChatRooms) {
+          EnterpriseUser receiver = chatRoom.getEnterprise();
+          ChatMessage lastMessage = chatRoom.getLastMessage();
+          chatPreviews.add(new ChatPreviewDTO(decodeImage(receiver.getProfileImage()), receiver.getName(), lastMessage, receiver.getUserId()));
+        }
+      }
+      case "enterprise" -> {
+        allChatRooms = chatRoomRepository.findAllByEnterprise(enterpriseUserRepository.findEnterpriseUserByUserId(sender.getUserId()));
+        for (ChatRoom chatRoom : allChatRooms) {
+          InvestorUser receiver = chatRoom.getInvestor();
+          ChatMessage lastMessage = chatRoom.getLastMessage();
+          chatPreviews.add(new ChatPreviewDTO(decodeImage(receiver.getProfileImage()), receiver.getName(), lastMessage, receiver.getUserId()));
+        }
+        System.out.println("in");
+      }
+      default -> throw new RuntimeException("Not a valid user type");
+    }
+    AllChatsPreviewDTO chatsPreviewDTO = new AllChatsPreviewDTO(chatPreviews);
+    return new ResponseEntity<>(chatsPreviewDTO, HttpStatus.OK);
+  }
+
+  private String decodeImage(byte[] byteArray) {
+    return new String(byteArray);
   }
 }

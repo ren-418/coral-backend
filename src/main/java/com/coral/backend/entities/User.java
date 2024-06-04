@@ -123,6 +123,7 @@ public class User {
 
     public String getUserType() {
         return userType;
+    }
 
     public String getProfileImageString(){return decodeImage(getProfileImage());}
 

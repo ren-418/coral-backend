@@ -61,10 +61,6 @@ public class EnterpriseUser extends User {
         return minimumInvestment;
     }
 
-    public String getUserType() {
-        return userType;
-    }
-
     public EnterpriseDTO toDTO(){
         EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
         enterpriseDTO.setEnterpriseType(getEnterpriseType());
