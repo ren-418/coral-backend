@@ -94,9 +94,10 @@ public class ChatService {
 
       newMessage.setTimeStamp(dateTimeString);
 
-      chatMessageRepository.save(newMessage);
       oldMessages.add(newMessage);
+      chatMessageRepository.save(newMessage);
       existingChatRoom.setMessages(oldMessages);
+      chatRoomRepository.save(existingChatRoom);
     }
     return new ResponseEntity<>("Message sent successfully", HttpStatus.OK);
   }
@@ -107,29 +108,33 @@ public class ChatService {
       return new ResponseEntity<>("Session expired", HttpStatus.NOT_FOUND);
     }
 
+
     User sender = optionalSession.get().getUser();
     InvestorUser investorUser;
     EnterpriseUser enterpriseUser;
+    AllMessagesInChatDTO chatRoomDTO;
 
     switch (sender.getUserTypeMin()) {
       case "investor" -> {
         investorUser = investorUserRepository.findInvestorUserByUserId(sender.getUserId());
         enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getReceiverId());
+        Optional<ChatRoom> chatRoom = getChatRoom(investorUser, enterpriseUser);
+        if (chatRoom.isEmpty()) {
+          return new ResponseEntity<>("No messages", HttpStatus.OK);
+        }
+        chatRoomDTO = new AllMessagesInChatDTO(enterpriseUser.getProfileImageString(), enterpriseUser.getName(), chatRoom.get().getMessages(), investorUser.getUserId());
       }
       case "enterprise" -> {
         investorUser = investorUserRepository.findInvestorUserByUserId(requestBody.getReceiverId());
         enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(sender.getUserId());
+        Optional<ChatRoom> chatRoom = getChatRoom(investorUser, enterpriseUser);
+        if (chatRoom.isEmpty()) {
+          return new ResponseEntity<>("No messages", HttpStatus.OK);
+        }
+        chatRoomDTO = new AllMessagesInChatDTO(investorUser.getProfileImageString(), investorUser.getName(), chatRoom.get().getMessages(), enterpriseUser.getUserId());
       }
       default -> throw new RuntimeException("Not a valid user type");
     }
-
-    Optional<ChatRoom> chatRoom = getChatRoom(investorUser, enterpriseUser);
-
-    ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
-    chatRoomDTO.setMessages(chatRoom.get().getMessages());
-    chatRoomDTO.setEnterpriseDTO(enterpriseUser.toDTO());
-    chatRoomDTO.setInvestorDTO(investorUser.toDTO());
-
     return new ResponseEntity<>(chatRoomDTO, HttpStatus.OK);
   }
 
