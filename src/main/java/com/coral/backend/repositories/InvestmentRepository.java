@@ -14,4 +14,6 @@ public interface InvestmentRepository extends JpaRepository<Investment, Long> {
   Optional<Investment> findInvestmentByInvestorAndEnterprise(InvestorUser investor, EnterpriseUser enterprise);
 
   Optional<List<Investment>> findAllByEnterprise (EnterpriseUser enterprise);
+
+  Optional<List<Investment>> findAllByInvestor (InvestorUser investor);
 }

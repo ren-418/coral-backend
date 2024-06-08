@@ -38,6 +38,9 @@ public class UserService {
 
     @Autowired
     private InvestmentRepository investmentRepository;
+
+    @Autowired
+    private InvestorUserRepository investorUserRepository;
   
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
@@ -165,5 +168,36 @@ public class UserService {
         }
         // Return success
         return new ResponseEntity<>("Investment made successfully", HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getInvestorProfile(InvestorDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional<User> user = userRepository.findUserByUserId(requestBody.getUserId());
+
+        if(user.isEmpty()){
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        InvestorUser investorUser = (InvestorUser) user.get();
+
+        InvestorDTO toReturnDTO = investorUser.toDTO();
+        List<EnterpriseDTO> enterprises = new ArrayList<>();
+        Optional<List<Investment>> investmentsOptional = investmentRepository.findAllByInvestor(investorUser);
+
+        if(investmentsOptional.isPresent()){
+            List<Investment> investments = investmentsOptional.get();
+            for(Investment investment: investments){
+                enterprises.add(investment.getEnterprise().toDTO());
+            }
+        }
+
+        toReturnDTO.setEnterprises(enterprises);
+
+        return new ResponseEntity<>(toReturnDTO, HttpStatus.OK);
     }
 }

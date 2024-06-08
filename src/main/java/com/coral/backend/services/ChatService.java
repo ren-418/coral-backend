@@ -120,7 +120,8 @@ public class ChatService {
         enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(requestBody.getReceiverId());
         Optional<ChatRoom> chatRoom = getChatRoom(investorUser, enterpriseUser);
         if (chatRoom.isEmpty()) {
-          return new ResponseEntity<>("No messages", HttpStatus.OK);
+          chatRoomDTO = new AllMessagesInChatDTO(enterpriseUser.getProfileImageString(), enterpriseUser.getName(), new ArrayList<>(), investorUser.getUserId());
+          return new ResponseEntity<>(chatRoomDTO, HttpStatus.OK);
         }
         chatRoomDTO = new AllMessagesInChatDTO(enterpriseUser.getProfileImageString(), enterpriseUser.getName(), chatRoom.get().getMessages(), investorUser.getUserId());
       }
@@ -129,7 +130,8 @@ public class ChatService {
         enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(sender.getUserId());
         Optional<ChatRoom> chatRoom = getChatRoom(investorUser, enterpriseUser);
         if (chatRoom.isEmpty()) {
-          return new ResponseEntity<>("No messages", HttpStatus.OK);
+          chatRoomDTO = new AllMessagesInChatDTO(investorUser.getProfileImageString(), investorUser.getName(), new ArrayList<>(), enterpriseUser.getUserId());
+          return new ResponseEntity<>(chatRoomDTO, HttpStatus.OK);
         }
         chatRoomDTO = new AllMessagesInChatDTO(investorUser.getProfileImageString(), investorUser.getName(), chatRoom.get().getMessages(), enterpriseUser.getUserId());
       }
