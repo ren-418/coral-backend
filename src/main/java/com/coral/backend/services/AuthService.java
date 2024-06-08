@@ -53,6 +53,7 @@ public class AuthService {
                 investorUser.setEmail(user.getEmail());
                 investorUser.setPassword(user.getPassword());
                 investorUser.setFirstLogin(true);
+                investorUser.setUserTypeMin("investor");
                 userRepository.save(investorUser);
                 response =  "Your account was created successfully";
                 break;
@@ -62,6 +63,7 @@ public class AuthService {
                 enterpriseUser.setPassword(user.getPassword());
                 enterpriseUser.setTotalCollected(0);
                 enterpriseUser.setFirstLogin(true);
+                enterpriseUser.setUserTypeMin("enterprise");
                 userRepository.save(enterpriseUser);
                 response =  "Your account was created successfully";
                 break;

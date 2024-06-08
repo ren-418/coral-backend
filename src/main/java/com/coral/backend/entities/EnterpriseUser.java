@@ -15,18 +15,22 @@ public class EnterpriseUser extends User {
     private int minimumInvestment;
     private int totalProfitReturn;
     private int totalCollected;
+    @Column(insertable = false, updatable = false)
+    private String userType = "enterprise";
+
     @ManyToMany(mappedBy = "enterprises")
     private List<InvestorUser> investors;
 
-    @Column(insertable=false, updatable=false)
-    private String userType = "enterprise";
+    @ManyToMany(mappedBy = "chatsWithEnterprises")
+    private List<InvestorUser> chatsWithInvestors;
 
     // Setters
-    public void setInvestors(List<InvestorUser> investors) {
-        this.investors = investors;
-    }
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public void setInvestors(List<InvestorUser> investors) {
+        this.investors = investors;
     }
     public void setTotalCollected(int totalCollected) {
         this.totalCollected = totalCollected;
@@ -45,6 +49,11 @@ public class EnterpriseUser extends User {
     }
 
     // Getters
+
+    public String getUserType() {
+        return userType;
+    }
+
     public List<InvestorUser> getInvestors() {
         return investors;
     }
@@ -62,9 +71,6 @@ public class EnterpriseUser extends User {
     }
     public int getMinimumInvestment() {
         return minimumInvestment;
-    }
-    public String getUserType() {
-        return userType;
     }
 
     public EnterpriseDTO toDTO(){
@@ -89,9 +95,33 @@ public class EnterpriseUser extends User {
         enterpriseDTO.setDescription(getDescription());
         List<InvestorDTO> investorsDTO = new ArrayList<>();
         for (InvestorUser investor : getInvestors()){
-            investorsDTO.add(investor.toDTO());
+            investorsDTO.add(investor.toDTOWithoutEnterprises());
         }
         enterpriseDTO.setInvestors(investorsDTO);
         return enterpriseDTO;
     }
+
+    public EnterpriseDTO toDTOWithoutInvestors() {
+        EnterpriseDTO enterpriseDTO = new EnterpriseDTO();
+        enterpriseDTO.setEnterpriseType(getEnterpriseType());
+        enterpriseDTO.setGoal(getGoal());
+        enterpriseDTO.setMinimumInvestment(getMinimumInvestment());
+        enterpriseDTO.setTotalProfitReturn(getTotalProfitReturn());
+        enterpriseDTO.setTotalCollected(getTotalCollected());
+        enterpriseDTO.setUserId(getUserId());
+        enterpriseDTO.setName(getName());
+        enterpriseDTO.setProfileImage(getProfileImageString());
+        enterpriseDTO.setUserId(getUserId());
+        enterpriseDTO.setLocation(getLocation());
+        enterpriseDTO.setFirstLogin(getFirstLogin());
+        enterpriseDTO.setUserType(getUserType());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : getAreas()){
+            areaNames.add(area.getName());
+        }
+        enterpriseDTO.setAreas(areaNames);
+        enterpriseDTO.setDescription(getDescription());
+        return enterpriseDTO;
+    }
+
 }

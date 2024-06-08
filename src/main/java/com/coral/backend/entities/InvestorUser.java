@@ -10,13 +10,12 @@ import java.util.List;
 @Entity
 public class InvestorUser extends User {
 
-    @Column(insertable=false, updatable=false)
-    private String userType = "investor";
-
     private int investorType;
     private String investmentCriteria;
     private int rangeMin;
     private int rangeMax;
+    @Column(insertable = false, updatable = false)
+    private String userType = "investor";
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
         name = "investments",
@@ -24,14 +23,23 @@ public class InvestorUser extends User {
         inverseJoinColumns = @JoinColumn(name = "enterprise_id")
     )
     private List<EnterpriseUser> enterprises;
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+        name = "chat_rooms",
+        joinColumns = @JoinColumn(name = "investor_id"),
+        inverseJoinColumns = @JoinColumn(name = "enterprise_id")
+    )
+    private List<EnterpriseUser> chatsWithEnterprises;
 
     //Setters
 
-    public void setEnterprises(List<EnterpriseUser> enterprises) {
-        this.enterprises = enterprises;
-    }
+
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public void setEnterprises(List<EnterpriseUser> enterprises) {
+        this.enterprises = enterprises;
     }
     public void setInvestorType(int investor_type) {
         this.investorType = investor_type;
@@ -50,6 +58,11 @@ public class InvestorUser extends User {
     }
 
     //Getters
+
+    public String getUserType() {
+        return userType;
+    }
+
     public List<EnterpriseUser> getEnterprises() {
         return enterprises;
     }
@@ -67,10 +80,6 @@ public class InvestorUser extends User {
 
     public int getRangeMax() {
         return rangeMax;
-    }
-
-    public String getUserType() {
-        return userType;
     }
 
     public InvestorDTO toDTO(){
@@ -93,9 +102,31 @@ public class InvestorUser extends User {
         investorDTO.setUserType(getUserType());
         List<EnterpriseDTO> enterprisesDTO = new ArrayList<>();
         for (EnterpriseUser enterprise : getEnterprises()){
-            enterprisesDTO.add(enterprise.toDTO());
+            enterprisesDTO.add(enterprise.toDTOWithoutInvestors());
         }
         investorDTO.setEnterprises(enterprisesDTO);
+        return investorDTO;
+    }
+
+    public InvestorDTO toDTOWithoutEnterprises(){
+        InvestorDTO investorDTO = new InvestorDTO();
+        investorDTO.setInvestorType(getInvestorType());
+        investorDTO.setUserId(getUserId());
+        List<String> areaNames = new ArrayList<>();
+        for (Area area : getAreas()){
+            areaNames.add(area.getName());
+        }
+        investorDTO.setAreas(areaNames);
+        investorDTO.setDescription(getDescription());
+        investorDTO.setInvestmentCriteria(getInvestmentCriteria());
+        investorDTO.setLocation(getLocation());
+        investorDTO.setName(getName());
+        investorDTO.setProfilePicture(getProfileImageString());
+        investorDTO.setRangeMax(getRangeMax());
+        investorDTO.setRangeMin(getRangeMin());
+        investorDTO.setFirstLogin(getFirstLogin());
+        investorDTO.setUserType(getUserType());
+
         return investorDTO;
     }
 }

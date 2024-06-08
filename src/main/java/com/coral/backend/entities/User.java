@@ -3,7 +3,6 @@ package com.coral.backend.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,6 +29,7 @@ public class User {
     private String description;
     private String location;
     private LocalDate initial_date;
+    private String userTypeMin;
 
     public User(){}
 
@@ -74,7 +74,6 @@ public class User {
     public void setAreas(List<Area> area) {
         this.areas = area;
     }
-
     //Getters
     public long getUserId() {
         return userId;
@@ -116,8 +115,21 @@ public class User {
         return profileImage;
     }
 
-    public String getProfileImageString(){return decodeImage(getProfileImage());}
+    public String getProfileImageString(){
+        if(profileImage != null){
+            return new String(profileImage);
+        }
+        return null;
+    }
 
+    public void setUserTypeMin(String userType) {
+        this.userTypeMin = userType;
+    }
+
+    public String getUserTypeMin() {
+        return userTypeMin;
+    }
+  
     private String decodeImage(byte[] byteArray) {
         return new String(byteArray);
     }

@@ -31,7 +31,6 @@ public class AuthController {
 
     @PostMapping("/check-user")
     public ResponseEntity<Object> checkUser(@RequestBody CheckSessionDTO checkSessionDTO) {
-        System.out.println(checkSessionDTO.getSessionToken());
         return authService.checkUser(checkSessionDTO);
     }
     @PostMapping("/reset-password/send-email")
