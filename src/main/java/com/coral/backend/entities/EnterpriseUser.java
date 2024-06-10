@@ -10,6 +10,8 @@ import java.util.List;
 
 @Entity
 public class EnterpriseUser extends User {
+    @OneToMany
+    private List<Post> posts;
     private String enterpriseType;
     private int goal;
     private int minimumInvestment;
@@ -47,9 +49,14 @@ public class EnterpriseUser extends User {
     public void setEnterpriseType(String enterpriseType) {
         this.enterpriseType = enterpriseType;
     }
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
 
     // Getters
-
+    public List<Post> getPosts() {
+        return posts;
+    }
     public String getUserType() {
         return userType;
     }
