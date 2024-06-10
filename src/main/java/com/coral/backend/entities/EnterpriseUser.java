@@ -17,6 +17,7 @@ public class EnterpriseUser extends User {
     private int minimumInvestment;
     private int totalProfitReturn;
     private int totalCollected;
+
     @Column(insertable = false, updatable = false)
     private String userType = "enterprise";
 

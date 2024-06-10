@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -45,6 +47,12 @@ public class UserService {
 
     @Autowired
     private FollowRepository followRepository;
+
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
   
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
@@ -170,6 +178,24 @@ public class UserService {
             investment.setAmountInvested(investment.getAmountInvested() + requestBody.getAmount());
             investmentRepository.save(investment);
         }
+        String receiverEmail=enterprise.getEmail();
+        String subject="Investment Notification";
+        String text="You have received an investment of $USD "+requestBody.getAmount()+" from "+investor.getName();
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(text);
+        email.setTo(receiverEmail);
+        email.setFrom("coral.recoveryteam@gmail.com");
+        mailSender.send(email);
+
+        Notification notification = new Notification();
+        notification.setEnterprise(enterprise);
+        notification.setInvestor(investor);
+        notification.setMessage(text);
+        notification.setRead(false);
+        notification.setTimeStamp(getActualDate().toString());
+        notificationRepository.save(notification);
+
         // Return success
         return new ResponseEntity<>("Investment made successfully", HttpStatus.OK);
     }
