@@ -30,10 +30,17 @@ public class InvestorUser extends User {
         inverseJoinColumns = @JoinColumn(name = "enterprise_id")
     )
     private List<EnterpriseUser> chatsWithEnterprises;
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "followings",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private List<InvestorUser> followers;
+    @ManyToMany(mappedBy = "followers")
+    private List<InvestorUser> follows;
 
     //Setters
-
-
     public void setUserType(String userType) {
         this.userType = userType;
     }
