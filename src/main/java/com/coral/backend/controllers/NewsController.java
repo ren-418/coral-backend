@@ -38,4 +38,14 @@ public class NewsController {
     public ResponseEntity<Object> deletePost(@RequestBody DeletePostDTO requestBody) {
         return newsService.deletePost(requestBody);
     }
+
+    @PostMapping("/get-news-areas")
+    public ResponseEntity<Object> getNewsArea(@RequestBody CheckSessionDTO requestBody) {
+        return newsService.getNewsByArea(requestBody);
+    }
+
+    @PostMapping("/get-news-location")
+    public ResponseEntity<Object> getNewsLocation(@RequestBody CheckSessionDTO requestBody) {
+        return newsService.getNewsByLocation(requestBody);
+    }
 }
