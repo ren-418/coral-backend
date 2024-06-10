@@ -17,13 +17,11 @@ import java.util.*;
 @Service
 public class NewsService {
     @Autowired
-    SessionRepository sessionRepository;
+    private SessionRepository sessionRepository;
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    EnterpriseUserRepository enterpriseUserRepository;
-    @Autowired
-    InvestorUserRepository InvestorUserRepository;
+    private EnterpriseUserRepository enterpriseUserRepository;
     @Autowired
     private InvestorUserRepository investorUserRepository;
 
@@ -44,6 +42,8 @@ public class NewsService {
         newPost.setCreatedAt(timestamp);
         newPost.setImage(encodeImage(requestBody.getImage()));
         newPost.setEnterpriseUser(enterprise);
+        newPost.setAreas(enterprise.getAreas());
+        newPost.setLocation(enterprise.getLocation());
 
         posts.add(newPost);
 
@@ -108,6 +108,9 @@ public class NewsService {
         Post post = postRepository.findByIdAndEnterpriseUser(requestBody.getPostId(), enterpriseUser);
 
         if (post != null) {
+            if (enterpriseUser.getUserId() != post.getEnterpriseUser().getUserId()) {
+                return new ResponseEntity<>("You do not own this post", HttpStatus.FORBIDDEN);
+            }
             post.setDescription(requestBody.getDescription());
             post.setImage(encodeImage(requestBody.getImage()));
             post.setTitle(requestBody.getTitle());
@@ -126,14 +129,69 @@ public class NewsService {
         User client = optionalSession.get().getUser();
         EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(client.getUserId());
 
+
         Post post = postRepository.findByIdAndEnterpriseUser(requestBody.getPostId(), enterpriseUser);
-        if (post == null) {
-            return new ResponseEntity<>("Post not found", HttpStatus.BAD_REQUEST);
+        if (post != null) {
+            if (enterpriseUser.getUserId() != post.getEnterpriseUser().getUserId()) {
+                return new ResponseEntity<>("You do not own this post", HttpStatus.FORBIDDEN);
+            }
+
+            List<Post> posts = enterpriseUser.getPosts();
+            posts.remove(post);
+            postRepository.delete(post);
+            return new ResponseEntity<>("Post deleted successfully" ,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Post not found", HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity<Object> getNewsByArea(CheckSessionDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        User client = optionalSession.get().getUser();
+        InvestorUser investorUser = investorUserRepository.findInvestorUserByUserId(client.getUserId());
+
+        Set<PostDTO> postDTOSet = new HashSet<>();
+        for (Area area : investorUser.getAreas()) {
+            for (Post post: postRepository.findAllByAreas(area)) {
+                postDTOSet.add(toPostDto(post));
+            }
         }
 
-        List<Post> posts = enterpriseUser.getPosts();
-        posts.remove(post);
-        postRepository.delete(post);
-        return new ResponseEntity<>("Post deleted successfully" ,HttpStatus.OK);
+        NewsListDTO newsListDTO = new NewsListDTO();
+        newsListDTO.setPosts(new ArrayList<>(postDTOSet));
+        return new ResponseEntity<>(newsListDTO, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getNewsByLocation(CheckSessionDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        User client = optionalSession.get().getUser();
+        InvestorUser investorUser = investorUserRepository.findInvestorUserByUserId(client.getUserId());
+
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for (Post post: postRepository.findAllByLocation(investorUser.getLocation())) {
+            postDTOList.add(toPostDto(post));
+        }
+
+        NewsListDTO newsListDTO = new NewsListDTO();
+        newsListDTO.setPosts(postDTOList);
+        return new ResponseEntity<>(newsListDTO, HttpStatus.OK);
+    }
+
+    private PostDTO toPostDto(Post post) {
+        PostDTO postDTO = new PostDTO();
+        postDTO.setTitle(post.getTitle());
+        postDTO.setDescription(post.getDescription());
+        postDTO.setImage(new String(post.getImage()));
+        postDTO.setDate(post.getCreatedAt());
+        postDTO.setEnterpriseUserId(post.getEnterpriseUser().getUserId());
+        postDTO.setEnterpriseName(post.getEnterpriseUser().getName());
+        postDTO.setEnterpriseProfileImage(post.getEnterpriseUser().toDTO().getProfileImage());
+        postDTO.setId(post.getId());
+        return postDTO;
     }
 }
