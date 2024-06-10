@@ -1,7 +1,5 @@
 package com.coral.backend.dtos;
 
-import com.coral.backend.entities.EnterpriseUser;
-
 import java.sql.Timestamp;
 
 public class PostDTO {
@@ -12,7 +10,7 @@ public class PostDTO {
     private String title;
     private String description;
     private String image;
-    private Timestamp createdAt;
+    private Timestamp date;
 
     public Long getId() {
         return id;
@@ -36,11 +34,11 @@ public class PostDTO {
     public void setImage(String image) {
         this.image = image;
     }
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public Timestamp getDate() {
+        return date;
     }
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
     public void setId(long id) {
         this.id = id;

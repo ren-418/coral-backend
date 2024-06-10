@@ -1,9 +1,6 @@
 package com.coral.backend.services;
 
-import com.coral.backend.dtos.CheckSessionDTO;
-import com.coral.backend.dtos.NewsCreationDTO;
-import com.coral.backend.dtos.NewsListDTO;
-import com.coral.backend.dtos.PostDTO;
+import com.coral.backend.dtos.*;
 import com.coral.backend.entities.*;
 import com.coral.backend.repositories.EnterpriseUserRepository;
 import com.coral.backend.repositories.InvestorUserRepository;
@@ -78,7 +75,7 @@ public class NewsService {
                         postDTO.setTitle(post.getTitle());
                         postDTO.setDescription(post.getDescription());
                         postDTO.setImage(new String(post.getImage()));
-                        postDTO.setCreatedAt(post.getCreatedAt());
+                        postDTO.setDate(post.getCreatedAt());
                         postDTO.setEnterpriseUserId(enterpriseUser.getUserId());
                         postDTO.setEnterpriseName(enterpriseUser.getName());
                         postDTO.setEnterpriseProfileImage(enterpriseUser.toDTO().getProfileImage());
@@ -98,5 +95,45 @@ public class NewsService {
     public byte[] encodeImage(String base64){
         String encodedString = Base64.getEncoder().encodeToString(base64.getBytes());
         return java.util.Base64.getDecoder().decode(encodedString);
+    }
+
+    public ResponseEntity<Object> modifyPost(NewsModificationDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        User client = optionalSession.get().getUser();
+        EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(client.getUserId());
+
+        Post post = postRepository.findByIdAndEnterpriseUser(requestBody.getPostId(), enterpriseUser);
+
+        if (post != null) {
+            post.setDescription(requestBody.getDescription());
+            post.setImage(encodeImage(requestBody.getImage()));
+            post.setTitle(requestBody.getTitle());
+            postRepository.save(post);
+            return new ResponseEntity<>("Post modified succesfully" ,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Post not found", HttpStatus.NOT_FOUND);
+    }
+
+
+    public ResponseEntity<Object> deletePost(DeletePostDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        User client = optionalSession.get().getUser();
+        EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(client.getUserId());
+
+        Post post = postRepository.findByIdAndEnterpriseUser(requestBody.getPostId(), enterpriseUser);
+        if (post == null) {
+            return new ResponseEntity<>("Post not found", HttpStatus.BAD_REQUEST);
+        }
+
+        List<Post> posts = enterpriseUser.getPosts();
+        posts.remove(post);
+        postRepository.delete(post);
+        return new ResponseEntity<>("Post deleted successfully" ,HttpStatus.OK);
     }
 }

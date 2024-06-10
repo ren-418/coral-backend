@@ -1,7 +1,9 @@
 package com.coral.backend.controllers;
 
 import com.coral.backend.dtos.CheckSessionDTO;
+import com.coral.backend.dtos.DeletePostDTO;
 import com.coral.backend.dtos.NewsCreationDTO;
+import com.coral.backend.dtos.NewsModificationDTO;
 import com.coral.backend.services.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +27,15 @@ public class NewsController {
     @PostMapping("/get-news")
     public ResponseEntity<Object> getNews(@RequestBody CheckSessionDTO requestBody) {
         return newsService.getNews(requestBody);
+    }
+
+    @PostMapping("/edit-post")
+    public ResponseEntity<Object> editPost(@RequestBody NewsModificationDTO requestBody) {
+        return newsService.modifyPost(requestBody);
+    }
+
+    @PostMapping("/delete-post")
+    public ResponseEntity<Object> deletePost(@RequestBody DeletePostDTO requestBody) {
+        return newsService.deletePost(requestBody);
     }
 }

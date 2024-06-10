@@ -1,6 +1,7 @@
 package com.coral.backend.controllers;
 
 import com.coral.backend.dtos.EnterpriseDTO;
+import com.coral.backend.dtos.FollowInvestorDTO;
 import com.coral.backend.dtos.InvestDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.services.UserService;
@@ -44,5 +45,15 @@ public class UserController {
     @PostMapping("/invest")
     public ResponseEntity<Object> investInEnterprise(@RequestBody InvestDTO requestBody){
         return userService.investInEnterprise(requestBody);
+    }
+
+    @PostMapping("/follow")
+    public ResponseEntity<Object> followInvestor(@RequestBody FollowInvestorDTO requestBody){
+        return userService.followInvestor(requestBody);
+    }
+
+    @PostMapping("/unfollow")
+    public ResponseEntity<Object> unfollowInvestor(@RequestBody FollowInvestorDTO requestBody){
+        return userService.unfollowInvestor(requestBody);
     }
 }
