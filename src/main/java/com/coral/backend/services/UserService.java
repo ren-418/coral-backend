@@ -263,6 +263,14 @@ public class UserService {
         follow.setFollowed(followed);
         followRepository.save(follow);
 
+        Notification notification = new Notification();
+        notification.setFrom(follower);
+        notification.setTo(followed);
+        notification.setMessage(follower.getName()+" has started following you.");
+        notification.setRead(false);
+        notification.setTimeStamp(getActualDate().toString());
+        notificationRepository.save(notification);
+
         return new ResponseEntity<>("Follow done successfully", HttpStatus.OK);
     }
 
