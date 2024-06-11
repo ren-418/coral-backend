@@ -10,7 +10,7 @@ public class PostDTO {
     private String title;
     private String description;
     private String image;
-    private Timestamp date;
+    private String date;
 
     public Long getId() {
         return id;
@@ -34,10 +34,10 @@ public class PostDTO {
     public void setImage(String image) {
         this.image = image;
     }
-    public Timestamp getDate() {
+    public String getDate() {
         return date;
     }
-    public void setDate(Timestamp date) {
+    public void setDate(String date) {
         this.date = date;
     }
     public void setId(long id) {

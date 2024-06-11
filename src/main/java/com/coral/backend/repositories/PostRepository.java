@@ -11,6 +11,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Post findByTitle(String title);
     List<Post> findAllByEnterpriseUser(EnterpriseUser enterpriseUser);
     Post findByIdAndEnterpriseUser(long id, EnterpriseUser enterpriseUser);
-    List<Post> findAllByAreas(Area area);
-    List<Post> findAllByLocation(String location);
 }

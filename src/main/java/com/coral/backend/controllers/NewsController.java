@@ -48,4 +48,9 @@ public class NewsController {
     public ResponseEntity<Object> getNewsLocation(@RequestBody CheckSessionDTO requestBody) {
         return newsService.getNewsByLocation(requestBody);
     }
+
+    @PostMapping("/get-own")
+    public ResponseEntity<Object> getOwnNews(@RequestBody CheckSessionDTO requestBody) {
+        return newsService.getOwnNews(requestBody);
+    }
 }
