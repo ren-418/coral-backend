@@ -9,12 +9,14 @@ import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.mercadopago.MercadoPagoConfig;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,18 +32,18 @@ public class UserController {
     }
 
     @PostMapping("/create-preference")
-    public ResponseEntity<Object> test(@RequestBody PreferenceDTO requestBody) throws MPException, MPApiException {
+    public ResponseEntity<Object> createPreference(@RequestBody PreferenceDTO requestBody) throws MPException, MPApiException {
         try {
             PreferenceBackUrlsRequest backUrl = PreferenceBackUrlsRequest.builder()
-                    .success("https://www.youtube.com/watch?v=-VD-l5BQsuE")
+                    .success("http://localhost:9090/api/v1/users/MP")
                     .pending("https://www.youtube.com/watch?v=-VD-l5BQsuE")
-                    .failure("https://www.youtube.com/watch?v=-VD-l5BQsuE")
+                    .failure("http://localhost:9090/api/v1/users/MP")
                     .build();
             PreferenceItemRequest item = PreferenceItemRequest.builder()
                     .title(requestBody.getTitle())
                     .quantity(requestBody.getQuantity().intValue())
                     .unitPrice(new BigDecimal(requestBody.getPrice().toString()))
-                    .id(requestBody.getSessionToken())
+                    .id(requestBody.getSessionToken()+"+"+requestBody.getEnterpriseId())
                     .currencyId("ARS")
                     .build();
             List<PreferenceItemRequest> items = new ArrayList<>();
@@ -55,6 +57,35 @@ public class UserController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (MPException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/MP")
+    public void receiveInfoAndInvest(@RequestParam Map<String,Object> requestBody, HttpServletResponse response) {
+        String id= (String) requestBody.get("preference_id");
+        PreferenceClient client = new PreferenceClient();
+        try {
+            Preference preference = client.get(id);
+            String values= preference.getItems().getFirst().getId();
+            String[] parts = values.split("\\+");
+            String sessionToken = parts[0];
+            String enterpriseId = parts[1];
+            long enterpriseIdLong = Long.parseLong(enterpriseId);
+            if (requestBody.get("status").equals("approved")) {
+                InvestDTO investDTO = new InvestDTO();
+                investDTO.setSessionToken(sessionToken);
+                investDTO.setAmount(preference.getItems().getFirst().getUnitPrice().intValue());
+                investDTO.setSessionToken(sessionToken);
+                investDTO.setEnterpriseId(enterpriseIdLong);
+                userService.investInEnterprise(investDTO);
+                response.sendRedirect("http://localhost:3000/");
+            } else {
+                System.out.println("Rejected");
+            }
+        } catch (MPException e) {
+            e.printStackTrace();
+        } catch (MPApiException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
