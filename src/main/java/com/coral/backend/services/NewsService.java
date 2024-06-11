@@ -213,7 +213,7 @@ public class NewsService {
         List<PostDTO> postDTOList = new ArrayList<>();
 
         if (posts.isEmpty()) {
-            return new ResponseEntity<>("No posts found", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
         }
 
         for (Post post : posts) {
