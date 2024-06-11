@@ -18,9 +18,11 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.postgresql:postgresql:42.3.7'
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.1.5'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation group: 'com.mercadopago', name: 'sdk-java', version: '2.1.24'
 }
 
 tasks.named('test') {

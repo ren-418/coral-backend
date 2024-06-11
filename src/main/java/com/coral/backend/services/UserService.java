@@ -1,6 +1,7 @@
 package com.coral.backend.services;
 
 import com.coral.backend.dtos.EnterpriseDTO;
+import com.coral.backend.dtos.FollowInvestorDTO;
 import com.coral.backend.dtos.InvestDTO;
 import com.coral.backend.dtos.InvestorDTO;
 import com.coral.backend.entities.*;
@@ -10,6 +11,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,6 +44,16 @@ public class UserService {
 
     @Autowired
     private InvestorUserRepository investorUserRepository;
+
+    @Autowired
+    private FollowRepository followRepository;
+
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
   
     @Transactional
     public ResponseEntity<Object> createInvestorProfile(InvestorDTO requestBody){
@@ -166,6 +179,36 @@ public class UserService {
             investment.setAmountInvested(investment.getAmountInvested() + requestBody.getAmount());
             investmentRepository.save(investment);
         }
+        String receiverEmail=enterprise.getEmail();
+        String subject="Investment Notification";
+        String text="You have received an investment of $USD "+requestBody.getAmount()+" from "+investor.getName();
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(text);
+        email.setTo(receiverEmail);
+        email.setFrom("coral.recoveryteam@gmail.com");
+        mailSender.send(email);
+
+        Notification notification = new Notification();
+        notification.setFrom(investor);
+        notification.setTo(enterprise);
+        notification.setMessage(text);
+        notification.setRead(false);
+        notification.setTimeStamp(getActualDate().toString());
+        notificationRepository.save(notification);
+
+        text=investor.getName()+" has invested $USD "+requestBody.getAmount()+" in "+enterprise.getName()+".";
+
+        List<Follow> followers = followRepository.findAllByFollowed(investor);
+        for (Follow follow : followers) {
+            Notification notificationFollow = new Notification();
+            notificationFollow.setFrom(investor);
+            notificationFollow.setTo(follow.getFollower());
+            notificationFollow.setMessage(text);
+            notificationFollow.setRead(false);
+            notificationFollow.setTimeStamp(getActualDate().toString());
+            notificationRepository.save(notificationFollow);
+        }
         // Return success
         return new ResponseEntity<>("Investment made successfully", HttpStatus.OK);
     }
@@ -199,5 +242,78 @@ public class UserService {
         toReturnDTO.setEnterprises(enterprises);
 
         return new ResponseEntity<>(toReturnDTO, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> followInvestor(FollowInvestorDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = optionalSession.get().getUser();
+        InvestorUser follower = investorUserRepository.findInvestorUserByUserId(user.getUserId());
+        InvestorUser followed = investorUserRepository.findInvestorUserByUserId(requestBody.getInvestorId());
+
+
+        if (followed == null) {
+            return new ResponseEntity<>("Investor not found", HttpStatus.BAD_REQUEST);
+        }
+        if (followRepository.findByFollowerAndFollowed(follower, followed) != null) {
+            return new ResponseEntity<>("Investor already followed", HttpStatus.CONFLICT);
+        }
+
+        Follow follow = new Follow();
+        follow.setFollower(follower);
+        follow.setFollowed(followed);
+        followRepository.save(follow);
+
+        Notification notification = new Notification();
+        notification.setFrom(follower);
+        notification.setTo(followed);
+        notification.setMessage(follower.getName()+" has started following you.");
+        notification.setRead(false);
+        notification.setTimeStamp(getActualDate().toString());
+        notificationRepository.save(notification);
+
+        return new ResponseEntity<>("You are now following " + followed.getName(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> unfollowInvestor(FollowInvestorDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+        User user = optionalSession.get().getUser();
+        InvestorUser follower = investorUserRepository.findInvestorUserByUserId(user.getUserId());
+        InvestorUser followed = investorUserRepository.findInvestorUserByUserId(requestBody.getInvestorId());
+
+        if (followed == null) {
+            return new ResponseEntity<>("Investor not found", HttpStatus.BAD_REQUEST);
+        }
+
+        if (followRepository.findByFollowerAndFollowed(follower, followed) == null) {
+            return new ResponseEntity<>("Did not follow user", HttpStatus.CONFLICT);
+        }
+
+        Follow follow = followRepository.findByFollowerAndFollowed(follower, followed);
+        followRepository.delete(follow);
+
+        return new ResponseEntity<>("You no longer follow" + followed.getName(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> isFollowing(FollowInvestorDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+        User user = optionalSession.get().getUser();
+        InvestorUser follower = investorUserRepository.findInvestorUserByUserId(user.getUserId());
+        InvestorUser followed = investorUserRepository.findInvestorUserByUserId(requestBody.getInvestorId());
+
+        if (followRepository.findByFollowerAndFollowed(follower, followed) == null) {
+            return new ResponseEntity<>("Not following", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("Already follows", HttpStatus.OK);
     }
 }
