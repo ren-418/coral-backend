@@ -146,16 +146,17 @@ public class NewsService {
             sameAreasEnterprises.addAll(enterpriseUserRepository.findAllByAreas(area));
         }
 
-        Set<PostDTO> postDTOSet = new HashSet<>();
-        for (EnterpriseUser enterpriseUser : sameAreasEnterprises) {
+        Set<EnterpriseUser> sameAreasEnterprisesSet = new HashSet<>(sameAreasEnterprises);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for (EnterpriseUser enterpriseUser : sameAreasEnterprisesSet) {
             List<Post> posts = enterpriseUser.getPosts();
             for (Post post : posts) {
-                postDTOSet.add(toPostDto(post));
+                postDTOList.add(toPostDto(post));
             }
         }
 
         NewsListDTO newsListDTO = new NewsListDTO();
-        newsListDTO.setPosts(new ArrayList<>(postDTOSet));
+        newsListDTO.setPosts(postDTOList);
         return new ResponseEntity<>(newsListDTO, HttpStatus.OK);
     }
 
