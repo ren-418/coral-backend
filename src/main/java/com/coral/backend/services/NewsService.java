@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -42,11 +43,8 @@ public class NewsService {
         newPost.setCreatedAt(timestamp);
         newPost.setImage(encodeImage(requestBody.getImage()));
         newPost.setEnterpriseUser(enterprise);
-        newPost.setAreas(enterprise.getAreas());
-        newPost.setLocation(enterprise.getLocation());
 
         posts.add(newPost);
-
         enterprise.setPosts(posts);
 
         postRepository.save(newPost);
@@ -70,17 +68,7 @@ public class NewsService {
                 List<Post> posts = enterpriseUser.getPosts();
                 if (!posts.isEmpty()) {
                     for (Post post : posts) {
-
-                        PostDTO postDTO = new PostDTO();
-                        postDTO.setTitle(post.getTitle());
-                        postDTO.setDescription(post.getDescription());
-                        postDTO.setImage(new String(post.getImage()));
-                        postDTO.setDate(post.getCreatedAt());
-                        postDTO.setEnterpriseUserId(enterpriseUser.getUserId());
-                        postDTO.setEnterpriseName(enterpriseUser.getName());
-                        postDTO.setEnterpriseProfileImage(enterpriseUser.toDTO().getProfileImage());
-
-                        postDTOList.add(postDTO);
+                        postDTOList.add(toPostDto(post));
                     }
                 }
             }
@@ -152,9 +140,16 @@ public class NewsService {
         User client = optionalSession.get().getUser();
         InvestorUser investorUser = investorUserRepository.findInvestorUserByUserId(client.getUserId());
 
-        Set<PostDTO> postDTOSet = new HashSet<>();
+
+        List<EnterpriseUser> sameAreasEnterprises = new ArrayList<>();
         for (Area area : investorUser.getAreas()) {
-            for (Post post: postRepository.findAllByAreas(area)) {
+            sameAreasEnterprises.addAll(enterpriseUserRepository.findAllByAreas(area));
+        }
+
+        Set<PostDTO> postDTOSet = new HashSet<>();
+        for (EnterpriseUser enterpriseUser : sameAreasEnterprises) {
+            List<Post> posts = enterpriseUser.getPosts();
+            for (Post post : posts) {
                 postDTOSet.add(toPostDto(post));
             }
         }
@@ -172,9 +167,14 @@ public class NewsService {
         User client = optionalSession.get().getUser();
         InvestorUser investorUser = investorUserRepository.findInvestorUserByUserId(client.getUserId());
 
+        List<EnterpriseUser> sameLocationEnterprises = enterpriseUserRepository.findAllByLocation(investorUser.getLocation());
+
         List<PostDTO> postDTOList = new ArrayList<>();
-        for (Post post: postRepository.findAllByLocation(investorUser.getLocation())) {
-            postDTOList.add(toPostDto(post));
+        for (EnterpriseUser enterpriseUser : sameLocationEnterprises) {
+            List<Post> posts = enterpriseUser.getPosts();
+            for (Post post : posts) {
+                postDTOList.add(toPostDto(post));
+            }
         }
 
         NewsListDTO newsListDTO = new NewsListDTO();
@@ -183,11 +183,12 @@ public class NewsService {
     }
 
     private PostDTO toPostDto(Post post) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         PostDTO postDTO = new PostDTO();
         postDTO.setTitle(post.getTitle());
         postDTO.setDescription(post.getDescription());
         postDTO.setImage(new String(post.getImage()));
-        postDTO.setDate(post.getCreatedAt());
+        postDTO.setDate(dateFormat.format(post.getCreatedAt()));
         postDTO.setEnterpriseUserId(post.getEnterpriseUser().getUserId());
         postDTO.setEnterpriseName(post.getEnterpriseUser().getName());
         postDTO.setEnterpriseProfileImage(post.getEnterpriseUser().toDTO().getProfileImage());

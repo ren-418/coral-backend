@@ -19,9 +19,6 @@ public class Post {
     private String description;
     private byte[] image;
     private Timestamp createdAt;
-    @ManyToMany
-    private List<Area> areas;
-    private String location;
 
     public EnterpriseUser getEnterpriseUser() {
         return enterpriseUser;
@@ -55,17 +52,5 @@ public class Post {
     }
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
-    }
-    public List<Area> getAreas() {
-        return areas;
-    }
-    public void setAreas(List<Area> areas) {
-        this.areas = areas;
-    }
-    public String getLocation() {
-        return location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
     }
 }
