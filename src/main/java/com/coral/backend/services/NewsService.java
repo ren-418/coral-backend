@@ -194,4 +194,29 @@ public class NewsService {
         postDTO.setId(post.getId());
         return postDTO;
     }
+
+    public ResponseEntity<Object> getOwnNews(CheckSessionDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        User client = optionalSession.get().getUser();
+        EnterpriseUser enterpriseUser = enterpriseUserRepository.findEnterpriseUserByUserId(client.getUserId());
+
+        if (enterpriseUser == null) {
+            return new ResponseEntity<>("Investors dont have posts", HttpStatus.FORBIDDEN);
+        }
+
+        List<Post> posts = enterpriseUser.getPosts();
+        List<PostDTO> postDTOList = new ArrayList<>();
+
+        if (posts.isEmpty()) {
+            return new ResponseEntity<>("No posts found", HttpStatus.BAD_REQUEST);
+        }
+
+        for (Post post : posts) {
+            postDTOList.add(toPostDto(post));
+        }
+        return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+    }
 }
