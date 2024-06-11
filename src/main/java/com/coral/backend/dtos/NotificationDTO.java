@@ -3,7 +3,9 @@ package com.coral.backend.dtos;
 public class NotificationDTO {
     private String notificationMessage;
     private String date;
-    private InvestorDTO investor;
+    private String profilePicture;
+
+    private String name;
 
     public void setNotificationMessage(String notificationMessage) {
         this.notificationMessage = notificationMessage;
@@ -13,8 +15,12 @@ public class NotificationDTO {
         this.date = date;
     }
 
-    public void setInvestor(InvestorDTO investor) {
-        this.investor = investor;
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture=profilePicture;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNotificationMessage() {
@@ -25,7 +31,11 @@ public class NotificationDTO {
         return date;
     }
 
-    public InvestorDTO getInvestor() {
-        return investor;
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public String getName() {
+        return name;
     }
 }
