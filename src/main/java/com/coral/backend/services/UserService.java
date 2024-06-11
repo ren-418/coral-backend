@@ -254,8 +254,12 @@ public class UserService {
         InvestorUser follower = investorUserRepository.findInvestorUserByUserId(user.getUserId());
         InvestorUser followed = investorUserRepository.findInvestorUserByUserId(requestBody.getInvestorId());
 
+
         if (followed == null) {
             return new ResponseEntity<>("Investor not found", HttpStatus.BAD_REQUEST);
+        }
+        if (followRepository.findByFollowerAndFollowed(follower, followed) != null) {
+            return new ResponseEntity<>("Investor already followed", HttpStatus.CONFLICT);
         }
 
         Follow follow = new Follow();
@@ -271,7 +275,7 @@ public class UserService {
         notification.setTimeStamp(getActualDate().toString());
         notificationRepository.save(notification);
 
-        return new ResponseEntity<>("Follow done successfully", HttpStatus.OK);
+        return new ResponseEntity<>("You are now following " + followed.getName(), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> unfollowInvestor(FollowInvestorDTO requestBody) {
@@ -287,9 +291,29 @@ public class UserService {
             return new ResponseEntity<>("Investor not found", HttpStatus.BAD_REQUEST);
         }
 
+        if (followRepository.findByFollowerAndFollowed(follower, followed) == null) {
+            return new ResponseEntity<>("Did not follow user", HttpStatus.CONFLICT);
+        }
+
         Follow follow = followRepository.findByFollowerAndFollowed(follower, followed);
         followRepository.delete(follow);
 
-        return new ResponseEntity<>("Un-follow done successfully", HttpStatus.OK);
+        return new ResponseEntity<>("You no longer follow" + followed.getName(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> isFollowing(FollowInvestorDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+        User user = optionalSession.get().getUser();
+        InvestorUser follower = investorUserRepository.findInvestorUserByUserId(user.getUserId());
+        InvestorUser followed = investorUserRepository.findInvestorUserByUserId(requestBody.getInvestorId());
+
+        if (followRepository.findByFollowerAndFollowed(follower, followed) == null) {
+            return new ResponseEntity<>("Not following", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("Already follows", HttpStatus.OK);
     }
 }

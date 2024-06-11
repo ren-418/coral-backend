@@ -101,4 +101,9 @@ public class UserController {
     public ResponseEntity<Object> unfollowInvestor(@RequestBody FollowInvestorDTO requestBody){
         return userService.unfollowInvestor(requestBody);
     }
+
+    @PostMapping("/is-following")
+    public ResponseEntity<Object> isFollowing(@RequestBody FollowInvestorDTO requestBody){
+        return userService.isFollowing(requestBody);
+    }
 }
