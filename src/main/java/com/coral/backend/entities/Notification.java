@@ -10,26 +10,24 @@ public class Notification {
     private long notificationId;
 
     @ManyToOne
-    @JoinColumn(name = "investor_id")
-    private InvestorUser investor;
+    @JoinColumn(name = "from_id")
+    private User from;
     @ManyToOne
-    @JoinColumn(name = "enterprise_id")
-    private EnterpriseUser enterprise;
+    @JoinColumn(name = "to_id")
+    private User to;
 
-    public InvestorUser getInvestor() {
-        return investor;
+    public User getFrom() {return from;}
+
+    public User getTo() {
+        return to;
     }
 
-    public EnterpriseUser getEnterprise() {
-        return enterprise;
+    public void setFrom(User from) {
+        this.from = from;
     }
 
-    public void setInvestor(InvestorUser investor) {
-        this.investor = investor;
-    }
-
-    public void setEnterprise(EnterpriseUser enterprise) {
-        this.enterprise = enterprise;
+    public void setTo(User to) {
+        this.to = to;
     }
 
     @Column(name = "message")

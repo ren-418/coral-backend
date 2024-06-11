@@ -48,6 +48,7 @@ public class UserService {
     @Autowired
     private FollowRepository followRepository;
 
+    @Autowired
     private JavaMailSenderImpl mailSender;
 
     @Autowired
@@ -189,13 +190,25 @@ public class UserService {
         mailSender.send(email);
 
         Notification notification = new Notification();
-        notification.setEnterprise(enterprise);
-        notification.setInvestor(investor);
+        notification.setFrom(investor);
+        notification.setTo(enterprise);
         notification.setMessage(text);
         notification.setRead(false);
         notification.setTimeStamp(getActualDate().toString());
         notificationRepository.save(notification);
 
+        text=investor.getName()+" has invested $USD "+requestBody.getAmount()+" in "+enterprise.getName()+".";
+
+        List<Follow> followers = followRepository.findAllByFollowed(investor);
+        for (Follow follow : followers) {
+            Notification notificationFollow = new Notification();
+            notificationFollow.setFrom(investor);
+            notificationFollow.setTo(follow.getFollower());
+            notificationFollow.setMessage(text);
+            notificationFollow.setRead(false);
+            notificationFollow.setTimeStamp(getActualDate().toString());
+            notificationRepository.save(notificationFollow);
+        }
         // Return success
         return new ResponseEntity<>("Investment made successfully", HttpStatus.OK);
     }

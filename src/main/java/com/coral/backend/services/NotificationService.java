@@ -25,8 +25,8 @@ public class NotificationService {
     NotificationRepository notificationRepository;
 
     public ResponseEntity<Object> getNotifications(CheckSessionDTO checkSessionDTO) {
-        EnterpriseUser user = (EnterpriseUser) authService.checkAuth(checkSessionDTO.getSessionToken());
-        List<Notification> notifications = notificationRepository.findAllByEnterpriseOrderByTimeStampDesc(user);
+        User user = authService.checkAuth(checkSessionDTO.getSessionToken());
+        List<Notification> notifications = notificationRepository.findAllByToOrderByTimeStampDesc(user);
         List<NotificationDTO> notificationDTOS= new ArrayList<>();
         for (Notification notification : notifications) {
             notification.setRead(true);
@@ -41,17 +41,14 @@ public class NotificationService {
         NotificationDTO notificationDTO = new NotificationDTO();
         notificationDTO.setNotificationMessage(notification.getMessage());
         notificationDTO.setDate(notification.getTimeStamp());
-        InvestorUser investor = notification.getInvestor();
-        InvestorDTO investorDTO = new InvestorDTO();
-        investorDTO.setName(investor.getName());
-        investorDTO.setProfilePicture(investor.getProfileImageString());
-        notificationDTO.setInvestor(investorDTO);
+        notificationDTO.setName(notification.getFrom().getName());
+        notificationDTO.setProfilePicture(notification.getFrom().getProfileImageString());
         return notificationDTO;
     }
 
     public ResponseEntity<Object> hasNotifications(CheckSessionDTO checkSessionDTO) {
-        EnterpriseUser user = (EnterpriseUser) authService.checkAuth(checkSessionDTO.getSessionToken());
-        List<Notification> notifications = notificationRepository.findAllByEnterpriseAndReadFalse(user);
+        User user = authService.checkAuth(checkSessionDTO.getSessionToken());
+        List<Notification> notifications = notificationRepository.findAllByToAndRead(user, false);
         return new ResponseEntity<>(!notifications.isEmpty(), HttpStatus.OK);
     }
 }
