@@ -4,6 +4,8 @@ public class PreferenceDTO {
 
     private String sessionToken;
 
+    private long enterpriseId;
+
     private String title;
 
     private Number price;
@@ -12,6 +14,14 @@ public class PreferenceDTO {
 
     public String getSessionToken() {
         return sessionToken;
+    }
+
+    public long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(long enterpriseId) {
+        this.enterpriseId = enterpriseId;
     }
 
     public String getTitle() {
