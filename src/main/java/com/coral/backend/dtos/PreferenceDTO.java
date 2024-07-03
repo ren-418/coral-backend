@@ -12,6 +12,8 @@ public class PreferenceDTO {
 
     private Number quantity;
 
+    private Boolean isPublic;
+
     public String getSessionToken() {
         return sessionToken;
     }
@@ -22,6 +24,14 @@ public class PreferenceDTO {
 
     public void setEnterpriseId(long enterpriseId) {
         this.enterpriseId = enterpriseId;
+    }
+
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public String getTitle() {

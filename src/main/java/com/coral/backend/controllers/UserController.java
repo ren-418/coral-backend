@@ -43,7 +43,7 @@ public class UserController {
                     .title(requestBody.getTitle())
                     .quantity(requestBody.getQuantity().intValue())
                     .unitPrice(new BigDecimal(requestBody.getPrice().toString()))
-                    .id(requestBody.getSessionToken()+"+"+requestBody.getEnterpriseId())
+                    .id(requestBody.getSessionToken()+"+"+requestBody.getEnterpriseId()+"+"+requestBody.getIsPublic())
                     .currencyId("ARS")
                     .build();
             List<PreferenceItemRequest> items = new ArrayList<>();
@@ -70,6 +70,8 @@ public class UserController {
             String[] parts = values.split("\\+");
             String sessionToken = parts[0];
             String enterpriseId = parts[1];
+            String isPublic = parts[2];
+            boolean isPublicBoolean = Boolean.parseBoolean(isPublic);
             long enterpriseIdLong = Long.parseLong(enterpriseId);
             if (requestBody.get("status").equals("approved")) {
                 InvestDTO investDTO = new InvestDTO();
@@ -77,6 +79,7 @@ public class UserController {
                 investDTO.setAmount(preference.getItems().getFirst().getUnitPrice().intValue());
                 investDTO.setSessionToken(sessionToken);
                 investDTO.setEnterpriseId(enterpriseIdLong);
+                investDTO.setIsPublic(isPublicBoolean);
                 userService.investInEnterprise(investDTO);
                 response.sendRedirect("http://localhost:3000/");
             } else {

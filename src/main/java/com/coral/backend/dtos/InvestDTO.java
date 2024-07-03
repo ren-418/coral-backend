@@ -5,6 +5,8 @@ public class InvestDTO {
   private long enterpriseId;
   private int amount;
 
+  private boolean isPublic;
+
   //Setters
   public void setAmount(int amount) {
     this.amount = amount;
@@ -15,6 +17,7 @@ public class InvestDTO {
   public void setSessionToken(String sessionToken) {
     this.sessionToken = sessionToken;
   }
+  public void setIsPublic(boolean isPublic) {this.isPublic = isPublic;}
 
   // Getters
   public String getSessionToken() {
@@ -26,4 +29,5 @@ public class InvestDTO {
   public long getEnterpriseId() {
     return enterpriseId;
   }
+  public boolean getIsPublic() {return isPublic;}
 }

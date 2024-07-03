@@ -197,18 +197,48 @@ public class UserService {
         notification.setTimeStamp(getActualDate().toString());
         notificationRepository.save(notification);
 
-        text=investor.getName()+" has invested $USD "+requestBody.getAmount()+" in "+enterprise.getName()+".";
+        if (requestBody.getIsPublic()) {
+            text=investor.getName()+" has invested $USD "+requestBody.getAmount()+" in "+enterprise.getName()+".";
 
-        List<Follow> followers = followRepository.findAllByFollowed(investor);
-        for (Follow follow : followers) {
-            Notification notificationFollow = new Notification();
-            notificationFollow.setFrom(investor);
-            notificationFollow.setTo(follow.getFollower());
-            notificationFollow.setMessage(text);
-            notificationFollow.setRead(false);
-            notificationFollow.setTimeStamp(getActualDate().toString());
-            notificationRepository.save(notificationFollow);
+            List<Follow> followers = followRepository.findAllByFollowed(investor);
+            for (Follow follow : followers) {
+                Notification notificationFollow = new Notification();
+                notificationFollow.setFrom(investor);
+                notificationFollow.setTo(follow.getFollower());
+                notificationFollow.setMessage(text);
+                notificationFollow.setRead(false);
+                notificationFollow.setTimeStamp(getActualDate().toString());
+                notificationRepository.save(notificationFollow);
+            }
         }
+
+        if (enterprise.getTotalCollected()>=enterprise.getGoal()){
+            text="Congratulations! You have reached your goal of $USD "+enterprise.getGoal()+" in "+enterprise.getName()+".";
+            Notification goalNotification = new Notification();
+            goalNotification.setFrom(enterprise);
+            goalNotification.setTo(enterprise);
+            goalNotification.setMessage(text);
+            goalNotification.setRead(false);
+            goalNotification.setTimeStamp(getActualDate().toString());
+            notificationRepository.save(goalNotification);
+            text=enterprise.getName()+" has reached its goal of $USD "+enterprise.getGoal()+".";
+
+            Optional<List<Investment>> investmentsOptional = investmentRepository.findAllByEnterprise(enterprise);
+
+            if(investmentsOptional.isPresent()){
+                List<Investment> investments = investmentsOptional.get();
+                for(Investment investment: investments){
+                    Notification achievedGoal = new Notification();
+                    achievedGoal.setFrom(enterprise);
+                    achievedGoal.setTo(investment.getInvestor());
+                    achievedGoal.setMessage(text);
+                    achievedGoal.setRead(false);
+                    achievedGoal.setTimeStamp(getActualDate().toString());
+                    notificationRepository.save(achievedGoal);
+                }
+            }
+        }
+
         // Return success
         return new ResponseEntity<>("Investment made successfully", HttpStatus.OK);
     }
