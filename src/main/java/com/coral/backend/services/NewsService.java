@@ -2,10 +2,7 @@ package com.coral.backend.services;
 
 import com.coral.backend.dtos.*;
 import com.coral.backend.entities.*;
-import com.coral.backend.repositories.EnterpriseUserRepository;
-import com.coral.backend.repositories.InvestorUserRepository;
-import com.coral.backend.repositories.PostRepository;
-import com.coral.backend.repositories.SessionRepository;
+import com.coral.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,8 @@ public class NewsService {
     private EnterpriseUserRepository enterpriseUserRepository;
     @Autowired
     private InvestorUserRepository investorUserRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public ResponseEntity<Object> createPost(NewsCreationDTO requestBody) {
         Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
@@ -43,6 +42,20 @@ public class NewsService {
         newPost.setCreatedAt(timestamp);
         newPost.setImage(encodeImage(requestBody.getImage()));
         newPost.setEnterpriseUser(enterprise);
+
+        List<User> tags = new ArrayList<>();
+        if (!requestBody.getTags().isEmpty()) {
+            for (String tag : requestBody.getTags()) {
+                Optional<User> user = userRepository.findUserByName(tag);
+                if (user.isEmpty()) {
+                    return new ResponseEntity<>("One of the tags is invalid", HttpStatus.NOT_FOUND);
+                }
+                tags.add(user.get());
+                List<Post> tagged_in = user.get().getTaggedInPost();
+                tagged_in.add(newPost);
+            }
+            newPost.setUsersTagged(tags);
+        }
 
         posts.add(newPost);
         enterprise.setPosts(posts);
@@ -194,6 +207,13 @@ public class NewsService {
         postDTO.setEnterpriseName(post.getEnterpriseUser().getName());
         postDTO.setEnterpriseProfileImage(post.getEnterpriseUser().toDTO().getProfileImage());
         postDTO.setId(post.getId());
+        if (post.getUsersTagged() != null) {
+            List<NameAndIdDTO> tagsByNameAndId = new ArrayList<>();
+            for (User user : post.getUsersTagged()) {
+                tagsByNameAndId.add(new NameAndIdDTO(user.getName(), user.getUserId(), user.getUserTypeMin()));
+            }
+            postDTO.setTags(tagsByNameAndId);
+        }
         return postDTO;
     }
 
@@ -220,5 +240,32 @@ public class NewsService {
             postDTOList.add(toPostDto(post));
         }
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getPrefixes(PrefixDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        String prefix = requestBody.getPrefix();
+        Optional<List<User>> list=userRepository.findAllByNameStartingWithIgnoreCase(prefix);
+        if (list.isPresent()){
+            List<MentionDTO> prefixes = new ArrayList<>();
+            for (User user : list.get()) {
+                MentionDTO mentionDTO = new MentionDTO();
+                mentionDTO.setName(user.getName());
+                if (user instanceof InvestorUser) {
+                    mentionDTO.setType("Investor");
+                } else {
+                    mentionDTO.setType("Enterprise");
+                }
+                mentionDTO.setProfileImage(user.getProfileImageString());
+                prefixes.add(mentionDTO);
+            }
+            requestBody.setPrefixesResult(prefixes);
+            return new ResponseEntity<>(requestBody, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No prefixes found", HttpStatus.NOT_FOUND);
+        }
     }
 }

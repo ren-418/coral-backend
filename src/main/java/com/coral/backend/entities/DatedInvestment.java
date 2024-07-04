@@ -1,6 +1,7 @@
 package com.coral.backend.entities;
 
 import jakarta.persistence.*;
+
 @Entity
 public class DatedInvestment {
     @Id
