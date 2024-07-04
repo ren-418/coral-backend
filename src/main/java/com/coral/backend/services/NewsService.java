@@ -2,10 +2,7 @@ package com.coral.backend.services;
 
 import com.coral.backend.dtos.*;
 import com.coral.backend.entities.*;
-import com.coral.backend.repositories.EnterpriseUserRepository;
-import com.coral.backend.repositories.InvestorUserRepository;
-import com.coral.backend.repositories.PostRepository;
-import com.coral.backend.repositories.SessionRepository;
+import com.coral.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,8 @@ public class NewsService {
     private EnterpriseUserRepository enterpriseUserRepository;
     @Autowired
     private InvestorUserRepository investorUserRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public ResponseEntity<Object> createPost(NewsCreationDTO requestBody) {
         Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
@@ -220,5 +219,24 @@ public class NewsService {
             postDTOList.add(toPostDto(post));
         }
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getPrefixes(PrefixDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        String prefix = requestBody.getPrefix();
+        Optional<List<User>> list=userRepository.findAllByNameStartingWithIgnoreCase(prefix);
+        if (list.isPresent()){
+            List<String> prefixes = new ArrayList<>();
+            for (User user : list.get()) {
+                prefixes.add(user.getName());
+            }
+            requestBody.setPrefixesResult(prefixes);
+            return new ResponseEntity<>(requestBody, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No prefixes found", HttpStatus.NOT_FOUND);
+        }
     }
 }
