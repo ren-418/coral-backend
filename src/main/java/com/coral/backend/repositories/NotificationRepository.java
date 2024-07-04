@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findAllByToOrderByTimeStampDesc(User to);
+    List<Notification> findAllByToOrderByNotificationIdDesc(User to);
 
     List<Notification> findAllByToAndRead( User to, boolean read);
 }
