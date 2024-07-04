@@ -229,9 +229,17 @@ public class NewsService {
         String prefix = requestBody.getPrefix();
         Optional<List<User>> list=userRepository.findAllByNameStartingWithIgnoreCase(prefix);
         if (list.isPresent()){
-            List<String> prefixes = new ArrayList<>();
+            List<MentionDTO> prefixes = new ArrayList<>();
             for (User user : list.get()) {
-                prefixes.add(user.getName());
+                MentionDTO mentionDTO = new MentionDTO();
+                mentionDTO.setName(user.getName());
+                if (user instanceof InvestorUser) {
+                    mentionDTO.setType("Investor");
+                } else {
+                    mentionDTO.setType("Enterprise");
+                }
+                mentionDTO.setProfileImage(user.getProfileImageString());
+                prefixes.add(mentionDTO);
             }
             requestBody.setPrefixesResult(prefixes);
             return new ResponseEntity<>(requestBody, HttpStatus.OK);

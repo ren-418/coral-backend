@@ -7,7 +7,7 @@ public class PrefixDTO {
     private String sessionToken;
     private String prefix;
 
-    private List<String> prefixesResult;
+    private List<MentionDTO> prefixesResult;
 
     public String getPrefix() {
         return prefix;
@@ -17,7 +17,7 @@ public class PrefixDTO {
         return sessionToken;
     }
 
-    public List<String> getPrefixesResult() {
+    public List<MentionDTO> getPrefixesResult() {
         return prefixesResult;
     }
 
@@ -29,7 +29,7 @@ public class PrefixDTO {
         this.sessionToken = sessionToken;
     }
 
-    public void setPrefixesResult(List<String> prefixesResult) {
+    public void setPrefixesResult(List<MentionDTO> prefixesResult) {
         this.prefixesResult = prefixesResult;
     }
 }
