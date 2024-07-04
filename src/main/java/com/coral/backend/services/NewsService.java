@@ -241,4 +241,31 @@ public class NewsService {
         }
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
     }
+
+    public ResponseEntity<Object> getPrefixes(PrefixDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.BAD_REQUEST);
+        }
+        String prefix = requestBody.getPrefix();
+        Optional<List<User>> list=userRepository.findAllByNameStartingWithIgnoreCase(prefix);
+        if (list.isPresent()){
+            List<MentionDTO> prefixes = new ArrayList<>();
+            for (User user : list.get()) {
+                MentionDTO mentionDTO = new MentionDTO();
+                mentionDTO.setName(user.getName());
+                if (user instanceof InvestorUser) {
+                    mentionDTO.setType("Investor");
+                } else {
+                    mentionDTO.setType("Enterprise");
+                }
+                mentionDTO.setProfileImage(user.getProfileImageString());
+                prefixes.add(mentionDTO);
+            }
+            requestBody.setPrefixesResult(prefixes);
+            return new ResponseEntity<>(requestBody, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No prefixes found", HttpStatus.NOT_FOUND);
+        }
+    }
 }

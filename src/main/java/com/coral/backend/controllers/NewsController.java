@@ -1,9 +1,6 @@
 package com.coral.backend.controllers;
 
-import com.coral.backend.dtos.CheckSessionDTO;
-import com.coral.backend.dtos.DeletePostDTO;
-import com.coral.backend.dtos.NewsCreationDTO;
-import com.coral.backend.dtos.NewsModificationDTO;
+import com.coral.backend.dtos.*;
 import com.coral.backend.services.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,5 +49,10 @@ public class NewsController {
     @PostMapping("/get-own")
     public ResponseEntity<Object> getOwnNews(@RequestBody CheckSessionDTO requestBody) {
         return newsService.getOwnNews(requestBody);
+    }
+
+    @PostMapping("/get-prefixes")
+    public ResponseEntity<Object> getPrefixes(@RequestBody PrefixDTO requestBody) {
+        return newsService.getPrefixes(requestBody);
     }
 }
