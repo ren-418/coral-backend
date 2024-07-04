@@ -1,10 +1,17 @@
 package com.coral.backend.dtos;
 
+import java.util.List;
+
 public class NewsCreationDTO {
     private String sessionToken;
     private String title;
     private String description;
     private String image;
+    private List<String> tags;
+
+    public List<String> getTags() {
+        return tags;
+    }
 
     public String getSessionToken() {
         return sessionToken;
@@ -30,5 +37,9 @@ public class NewsCreationDTO {
     }
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }
