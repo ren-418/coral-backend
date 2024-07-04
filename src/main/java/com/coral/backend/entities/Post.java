@@ -20,6 +20,9 @@ public class Post {
     private byte[] image;
     private Timestamp createdAt;
 
+    @ManyToMany(mappedBy = "taggedInPost")
+    private List<User> usersTagged;
+
     public EnterpriseUser getEnterpriseUser() {
         return enterpriseUser;
     }
@@ -52,5 +55,11 @@ public class Post {
     }
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+    public List<User> getUsersTagged() {
+        return usersTagged;
+    }
+    public void setUsersTagged(List<User> tags) {
+        this.usersTagged = tags;
     }
 }
