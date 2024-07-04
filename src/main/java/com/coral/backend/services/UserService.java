@@ -1,10 +1,8 @@
 package com.coral.backend.services;
 
-import com.coral.backend.dtos.EnterpriseDTO;
-import com.coral.backend.dtos.FollowInvestorDTO;
-import com.coral.backend.dtos.InvestDTO;
-import com.coral.backend.dtos.InvestorDTO;
+import com.coral.backend.dtos.*;
 import com.coral.backend.entities.*;
+import com.coral.backend.entities.DatedInvestment;
 import com.coral.backend.repositories.*;
 
 import jakarta.transaction.Transactional;
@@ -53,6 +51,9 @@ public class UserService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private DatedInvestmentRepository datedInvestmentRepository;
 
   
     @Transactional
@@ -165,6 +166,14 @@ public class UserService {
             enterprise.setTotalCollected(enterprise.getTotalCollected()+ requestBody.getAmount());
             enterpriseUserRepository.save(enterprise);
         }
+
+        DatedInvestment datedInvestment = new DatedInvestment();
+        datedInvestment.setEnterprise(enterprise);
+        datedInvestment.setInvestor(investor);
+        datedInvestment.setAmountInvested(requestBody.getAmount());
+        datedInvestment.setTimeStamp(getActualDate().toString());
+        datedInvestmentRepository.save(datedInvestment);
+        
         // If new investment, Create investmentRelationship and add values
         Optional<Investment> optionalInvestment = investmentRepository.findInvestmentByInvestorAndEnterprise(investor, enterprise);
         if (optionalInvestment.isEmpty()) {
@@ -345,5 +354,69 @@ public class UserService {
         }
 
         return new ResponseEntity<>("Already follows", HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getAllActivity(ActivityDTO requestBody) {
+        Optional<Session> optionalSession = sessionRepository.findSessionBySessionToken(requestBody.getSessionToken());
+        if (optionalSession.isEmpty()) {
+            return new ResponseEntity<>("Session expired", HttpStatus.UNAUTHORIZED);
+        }
+        if (Objects.equals(requestBody.getTo(), "")){
+            requestBody.setTo(getActualDate().toString());
+        }
+        User user = optionalSession.get().getUser();
+        if (user instanceof InvestorUser){
+            InvestorUser investor = investorUserRepository.findInvestorUserByUserId(user.getUserId());
+            Optional<List<DatedInvestment>> allInvestmentsInRange=datedInvestmentRepository.findAllByInvestorAndTimeStampBetween(investor,requestBody.getFrom(),requestBody.getTo());
+            if (allInvestmentsInRange.isPresent()){
+                Map<String,Integer> activities=new HashMap<>();
+                for (DatedInvestment investment:allInvestmentsInRange.get()){
+                    String enterpriseName=investment.getEnterprise().getName();
+                    if (activities.containsKey(enterpriseName)){
+                        activities.put(enterpriseName,activities.get(enterpriseName)+investment.getAmountInvested());
+                    }else{
+                        activities.put(enterpriseName,investment.getAmountInvested());
+                    }
+                }
+                List<InvestmentInfoDTO> investmentInfoDTOS=new ArrayList<>();
+                for (Map.Entry<String,Integer> entry:activities.entrySet()){
+                    InvestmentInfoDTO investmentInfoDTO=new InvestmentInfoDTO();
+                    investmentInfoDTO.setName(entry.getKey());
+                    investmentInfoDTO.setAmount(entry.getValue());
+                    investmentInfoDTOS.add(investmentInfoDTO);
+                }
+                PdfDTO pdfDTO=new PdfDTO();
+                pdfDTO.setInvestmentInfo(investmentInfoDTOS);
+                return new ResponseEntity<>(pdfDTO,HttpStatus.OK);
+            }
+        } else if (user instanceof EnterpriseUser) {
+            EnterpriseUser enterprise = enterpriseUserRepository.findEnterpriseUserByUserId(user.getUserId());
+            Optional<List<DatedInvestment>> allInvestmentsInRange=datedInvestmentRepository.findAllByEnterpriseAndTimeStampBetween(enterprise,requestBody.getFrom(),requestBody.getTo());
+            if (allInvestmentsInRange.isPresent()){
+                Map<String,Integer> activities=new HashMap<>();
+                for (DatedInvestment investment:allInvestmentsInRange.get()){
+                    String investorName=investment.getInvestor().getName();
+                    if (activities.containsKey(investorName)){
+                        activities.put(investorName,activities.get(investorName)+investment.getAmountInvested());
+                    }else{
+                        activities.put(investorName,investment.getAmountInvested());
+                    }
+                }
+                List<InvestmentInfoDTO> investmentInfoDTOS=new ArrayList<>();
+                for (Map.Entry<String,Integer> entry:activities.entrySet()){
+                    InvestmentInfoDTO investmentInfoDTO=new InvestmentInfoDTO();
+                    investmentInfoDTO.setName(entry.getKey());
+                    investmentInfoDTO.setAmount(entry.getValue());
+                    investmentInfoDTOS.add(investmentInfoDTO);
+                }
+                PdfDTO pdfDTO=new PdfDTO();
+                pdfDTO.setInvestmentInfo(investmentInfoDTOS);
+                return new ResponseEntity<>(pdfDTO,HttpStatus.OK);
+            }
+        }
+        else{
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("No activities found", HttpStatus.NOT_FOUND);
     }
 }

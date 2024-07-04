@@ -140,4 +140,9 @@ public class UserController {
     public ResponseEntity<Object> isFollowing(@RequestBody FollowInvestorDTO requestBody){
         return userService.isFollowing(requestBody);
     }
+
+    @PostMapping("/get-activity")
+    public ResponseEntity<Object> getAllActivity(@RequestBody ActivityDTO requestBody){
+        return userService.getAllActivity(requestBody);
+    }
 }
