@@ -36,6 +36,9 @@ public class User {
     @ManyToMany(cascade=CascadeType.ALL)
     private List<Area> areas;
 
+    @ManyToMany(cascade=CascadeType.ALL)
+    private List<Post> taggedInPost;
+
     //Setters
     public void setProfileImage(byte[] base64) {
         this.profileImage = base64;
@@ -132,5 +135,12 @@ public class User {
   
     private String decodeImage(byte[] byteArray) {
         return new String(byteArray);
+    }
+
+    public List<Post> getTaggedInPost() {
+        return taggedInPost;
+    }
+    public void setTaggedInPost(List<Post> taggedIn) {
+        this.taggedInPost = taggedIn;
     }
 }

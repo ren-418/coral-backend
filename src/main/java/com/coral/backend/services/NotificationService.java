@@ -26,7 +26,7 @@ public class NotificationService {
 
     public ResponseEntity<Object> getNotifications(CheckSessionDTO checkSessionDTO) {
         User user = authService.checkAuth(checkSessionDTO.getSessionToken());
-        List<Notification> notifications = notificationRepository.findAllByToOrderByTimeStampDesc(user);
+        List<Notification> notifications = notificationRepository.findAllByToOrderByNotificationIdDesc(user);
         List<NotificationDTO> notificationDTOS= new ArrayList<>();
         for (Notification notification : notifications) {
             notification.setRead(true);

@@ -1,6 +1,7 @@
 package com.coral.backend.dtos;
 
-import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 public class PostDTO {
     private long id;
@@ -11,6 +12,7 @@ public class PostDTO {
     private String description;
     private String image;
     private String date;
+    private List<NameAndIdDTO> tags;
 
     public Long getId() {
         return id;
@@ -60,5 +62,11 @@ public class PostDTO {
     }
     public void setEnterpriseProfileImage(String enterpriseProfileImage) {
         this.enterpriseProfileImage = enterpriseProfileImage;
+    }
+    public List<NameAndIdDTO> getTags() {
+        return tags;
+    }
+    public void setTags(List<NameAndIdDTO> tags) {
+        this.tags = tags;
     }
 }

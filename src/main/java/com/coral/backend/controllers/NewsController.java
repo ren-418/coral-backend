@@ -22,7 +22,7 @@ public class NewsController {
     }
 
     @PostMapping("/get-news")
-    public ResponseEntity<Object> getNews(@RequestBody CheckSessionDTO requestBody) {
+    public ResponseEntity<Object> getSubscribedNews(@RequestBody CheckSessionDTO requestBody) {
         return newsService.getNews(requestBody);
     }
 

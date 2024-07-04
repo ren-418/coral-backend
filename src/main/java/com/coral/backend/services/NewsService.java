@@ -43,6 +43,20 @@ public class NewsService {
         newPost.setImage(encodeImage(requestBody.getImage()));
         newPost.setEnterpriseUser(enterprise);
 
+        List<User> tags = new ArrayList<>();
+        if (!requestBody.getTags().isEmpty()) {
+            for (String tag : requestBody.getTags()) {
+                Optional<User> user = userRepository.findUserByName(tag);
+                if (user.isEmpty()) {
+                    return new ResponseEntity<>("One of the tags is invalid", HttpStatus.NOT_FOUND);
+                }
+                tags.add(user.get());
+                List<Post> tagged_in = user.get().getTaggedInPost();
+                tagged_in.add(newPost);
+            }
+            newPost.setUsersTagged(tags);
+        }
+
         posts.add(newPost);
         enterprise.setPosts(posts);
 
@@ -193,6 +207,13 @@ public class NewsService {
         postDTO.setEnterpriseName(post.getEnterpriseUser().getName());
         postDTO.setEnterpriseProfileImage(post.getEnterpriseUser().toDTO().getProfileImage());
         postDTO.setId(post.getId());
+        if (post.getUsersTagged() != null) {
+            List<NameAndIdDTO> tagsByNameAndId = new ArrayList<>();
+            for (User user : post.getUsersTagged()) {
+                tagsByNameAndId.add(new NameAndIdDTO(user.getName(), user.getUserId(), user.getUserTypeMin()));
+            }
+            postDTO.setTags(tagsByNameAndId);
+        }
         return postDTO;
     }
 
