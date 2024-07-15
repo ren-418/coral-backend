@@ -107,7 +107,6 @@ public class UserService {
         if (Objects.equals(requestBody.getEnterpriseType(), "Community")){
             user.setEnterpriseType("Community");
             user.setGoal(requestBody.getGoal());
-            user.setTotalCollected(0);
             user.setMinimumInvestment(requestBody.getMinimumInvestment());
             user.setTotalProfitReturn(requestBody.getTotalProfitReturn());
         } else {
